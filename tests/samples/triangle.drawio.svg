@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" content="&lt;mxGraphModel&gt;&lt;root&gt;&lt;mxCell id=&quot;0&quot;/&gt;&lt;mxCell id=&quot;1&quot; parent=&quot;0&quot;/&gt;&lt;mxCell id=&quot;a&quot; value=&quot;A&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;40&quot; y=&quot;40&quot; width=&quot;120&quot; height=&quot;60&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;b&quot; value=&quot;B&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;320&quot; y=&quot;40&quot; width=&quot;120&quot; height=&quot;60&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;c&quot; value=&quot;C&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;&lt;mxGeometry x=&quot;180&quot; y=&quot;220&quot; width=&quot;120&quot; height=&quot;60&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;e1&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;a&quot; target=&quot;b&quot;&gt;&lt;mxGeometry relative=&quot;1&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;e2&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;b&quot; target=&quot;c&quot;&gt;&lt;mxGeometry relative=&quot;1&quot;/&gt;&lt;/mxCell&gt;&lt;mxCell id=&quot;e3&quot; edge=&quot;1&quot; parent=&quot;1&quot; source=&quot;a&quot; target=&quot;c&quot;&gt;&lt;mxGeometry relative=&quot;1&quot;/&gt;&lt;/mxCell&gt;&lt;/root&gt;&lt;/mxGraphModel&gt;">
+  <rect x="40" y="40" width="120" height="60" fill="#dae8fc" stroke="#6c8ebf"/>
+  <text x="100" y="75" text-anchor="middle">A</text>
+  <rect x="320" y="40" width="120" height="60" fill="#d5e8d4" stroke="#82b366"/>
+  <text x="380" y="75" text-anchor="middle">B</text>
+  <rect x="180" y="220" width="120" height="60" fill="#ffe6cc" stroke="#d79b00"/>
+  <text x="240" y="255" text-anchor="middle">C</text>
+  <path d="M 160 70 L 320 70" fill="none" stroke="#000000"/>
+  <path d="M 360 100 L 300 220" fill="none" stroke="#000000"/>
+  <path d="M 130 100 L 210 220" fill="none" stroke="#000000"/>
+</svg>

@@ -37,8 +37,14 @@ def _point_to_box_dist(p, box):
     return math.hypot(dx, dy)
 
 
-def classify(els):
-    """Tag each drawable with a role. Returns nothing; sets el.role/head/text."""
+def classify(els, canvas=None):
+    """Tag each drawable with a role. Sets el.role/head/text.
+
+    A shape whose bounding box covers nearly the whole canvas is a background
+    rect, not a node, so it is skipped.
+    """
+    cw, ch = (canvas or (0, 0))
+    canvas_area = cw * ch
     for e in els:
         e.role = None
         e.head = None
@@ -51,6 +57,8 @@ def classify(els):
             e.role = "connector"
         elif side <= ARROWHEAD_MAX_SIDE:
             e.role = "arrowhead"
+        elif canvas_area and (w * h) >= 0.9 * canvas_area:
+            e.role = "background"   # spans the canvas: not a node
         else:
             e.role = "shape"
 
@@ -200,8 +208,8 @@ def attach_edge_labels(edges, leftover_runs):
 
 
 def reconstruct_universal(svg_path):
-    els = load(svg_path)
-    classify(els)
+    els, canvas = load(svg_path)
+    classify(els, canvas)
     associate_arrowheads(els)
     filter_decorations(els)
     leftovers = attach_text(els, load_text(svg_path))

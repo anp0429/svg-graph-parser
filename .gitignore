@@ -4,3 +4,7 @@ __pycache__/
 *.pyc
 *.egg-info/
 .DS_Store
+fetch_samples.py
+wiki_samples/
+fetch_samples.py
+wiki_samples/

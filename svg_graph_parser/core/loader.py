@@ -115,9 +115,21 @@ class Element:
 
 
 def load(svg_path):
-    """Return a flat list of resolved Elements with absolute coordinates."""
+    """Return (elements, canvas) where canvas is (width, height) or None.
+
+    canvas lets downstream stages reject a background rect that spans the
+    whole drawing, which is not a node.
+    """
     tree = ET.parse(svg_path)
     root = tree.getroot()
+
+    cw = _num(root.attrib, "width", 0.0)
+    ch = _num(root.attrib, "height", 0.0)
+    if (cw == 0.0 or ch == 0.0) and root.attrib.get("viewBox"):
+        vb = root.attrib["viewBox"].replace(",", " ").split()
+        if len(vb) == 4:
+            cw, ch = float(vb[2]), float(vb[3])
+    canvas = (cw, ch) if cw and ch else None
 
     # Index every element that has an id, so <use> can find its target.
     by_id = {}
@@ -163,7 +175,7 @@ def load(svg_path):
             walk(child, m, group_id, depth + 1)
 
     walk(root, IDENTITY, None, 0)
-    return out
+    return out, canvas
 
 
 def _style_fill(attrib):
@@ -181,7 +193,7 @@ def _style_fill(attrib):
 
 if __name__ == "__main__":
     import sys
-    els = load(sys.argv[1])
+    els, canvas = load(sys.argv[1])
     print("resolved drawables: %d" % len(els))
     for e in els:
         b = e.bbox

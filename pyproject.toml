@@ -5,7 +5,9 @@ description = "Reconstruct a connection graph from an SVG diagram using geometry
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-dependencies = []
+dependencies = [
+    "svgpathtools>=1.7.2",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]

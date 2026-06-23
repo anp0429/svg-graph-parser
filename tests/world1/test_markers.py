@@ -53,3 +53,26 @@ def test_defs_not_parsed_as_nodes():
     g = SceneGraph.from_svg(str(f))
     # 19 real rect nodes; no marker-definition glyphs leaking in
     assert len(g.nodes) == 19
+
+
+def test_degenerate_rect_not_a_node():
+    # An editor's empty zero-size "backgroundrect" must not become a phantom node.
+    f = _maybe("2PP_counting_flowchart.svg")
+    if f is None:
+        import pytest; pytest.skip("wiki sample not present")
+    g = SceneGraph.from_svg(str(f))
+    # no node may have zero area
+    for n in g.nodes.values():
+        w = n.bbox[2] - n.bbox[0]; h = n.bbox[3] - n.bbox[1]
+        assert w > 0 and h > 0, f"zero-area node leaked in: {n.id}"
+
+
+def test_axis_aligned_connectors_survive():
+    # Guard against the regression we hit: a zero-dimension guard must NOT delete
+    # straight (axis-aligned) connectors. Lamp's directed edges must stay intact.
+    g = SceneGraph.from_svg(str(SAMPLES_LAMP))
+    assert len(g.edges) == 5
+    assert all(e.directed for e in g.edges)
+
+
+SAMPLES_LAMP = Path(__file__).resolve().parents[1] / "samples" / "lamp_inkscape.svg"

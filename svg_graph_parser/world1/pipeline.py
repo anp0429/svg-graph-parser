@@ -120,6 +120,12 @@ def classify(els, canvas=None):
             e.role = "background"
             continue
         if e.tag in ("rect", "circle", "ellipse"):
+            # a node with zero width or height has no extent: an editor's empty
+            # "backgroundrect" placeholder, not a real node. Connectors are
+            # handled separately, so a zero-dimension straight line is unaffected.
+            if w == 0 or h == 0:
+                e.role = "degenerate"
+                continue
             e.role = "shape"
             continue
         if e.tag == "line":

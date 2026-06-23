@@ -40,8 +40,10 @@ def _point_to_box_dist(p, box):
 def classify(els, canvas=None):
     """Tag each drawable with a role. Sets el.role/head/text.
 
-    A shape whose bounding box covers nearly the whole canvas is a background
-    rect, not a node, so it is skipped.
+    rect, circle, ellipse are closed by type, so they are nodes regardless of
+    fill (stroke-only boxes are common in block diagrams). For paths and
+    polygons we use closure: a closed small shape is an arrowhead, an open
+    shape is a connector line, a closed large shape is a node.
     """
     cw, ch = (canvas or (0, 0))
     canvas_area = cw * ch
@@ -49,16 +51,30 @@ def classify(els, canvas=None):
         e.role = None
         e.head = None
         e.text = None
-        fill = (_style_fill(e.attrib) or "none").lower()
         w, h = e.bbox[2] - e.bbox[0], e.bbox[3] - e.bbox[1]
         side = max(w, h)
-        is_open = fill in ("none", "")
-        if is_open:
+        area = w * h
+
+        if canvas_area and area >= 0.9 * canvas_area:
+            e.role = "background"
+            continue
+        if e.tag in ("rect", "circle", "ellipse"):
+            e.role = "shape"
+            continue
+        if e.tag == "line":
             e.role = "connector"
-        elif side <= ARROWHEAD_MAX_SIDE:
+            continue
+
+        # path or polygon
+        closed = getattr(e, "closed", None)
+        if closed is None:
+            # fall back to fill if closure unknown
+            fill = (_style_fill(e.attrib) or "none").lower()
+            closed = fill not in ("none", "")
+        if closed and side <= ARROWHEAD_MAX_SIDE:
             e.role = "arrowhead"
-        elif canvas_area and (w * h) >= 0.9 * canvas_area:
-            e.role = "background"   # spans the canvas: not a node
+        elif not closed:
+            e.role = "connector"
         else:
             e.role = "shape"
 

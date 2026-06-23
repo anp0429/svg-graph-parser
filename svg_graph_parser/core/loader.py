@@ -104,11 +104,16 @@ def _ellipse_points(cx, cy, rx, ry, n=48):
 
 class Element:
     """A resolved drawable: tag, attributes, absolute points, and bbox."""
-    def __init__(self, tag, attrib, points, group_id):
+    def __init__(self, tag, attrib, points, group_id, closed=None):
         self.tag = tag
         self.attrib = attrib
         self.points = points
         self.group_id = group_id
+        # rect, circle, ellipse, polygon are closed by definition; for a path
+        # the loader passes closure parsed from the d-string (Z command).
+        if closed is None:
+            closed = tag in ("rect", "circle", "ellipse", "polygon")
+        self.closed = closed
         xs = [p[0] for p in points]
         ys = [p[1] for p in points]
         self.bbox = (min(xs), min(ys), max(xs), max(ys))
@@ -168,7 +173,12 @@ def load(svg_path):
 
         pts = _local_points(el)
         if pts:
-            out.append(Element(tag, el.attrib, apply_many(m, pts), group_id))
+            closed = None
+            if _tag(el) == "path":
+                d = el.attrib.get("d", "")
+                closed = ("z" in d) or ("Z" in d)
+            out.append(Element(_tag(el), el.attrib, apply_many(m, pts),
+                               group_id, closed=closed))
 
         # Some drawables can still contain children (rare), walk them too.
         for child in el:

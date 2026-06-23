@@ -113,3 +113,7 @@ A connection graph is the substrate for anything that has to reason about a
 diagram rather than display it: what depends on what, what is reachable, where
 the cycles are. A later repo builds an MCP server on top of this parser so an
 LLM agent can query a diagram's structure directly.
+
+## License
+
+  MIT. See LICENSE.

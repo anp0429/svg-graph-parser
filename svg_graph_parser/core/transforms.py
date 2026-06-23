@@ -21,9 +21,13 @@ IDENTITY = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 
 _FUNC = re.compile(r"(matrix|translate|scale|rotate|skewX|skewY)\s*\(([^)]*)\)")
 
+_SVG_NUMBER = re.compile(r"[-+]?(?:\d*\.\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?")
+
 
 def _nums(s):
-    return [float(t) for t in re.split(r"[\s,]+", s.strip()) if t]
+    """Every number in an SVG arg list, robust to missing separators
+    (e.g. '.4778-76.05-55.02') and scientific notation."""
+    return [float(x) for x in _SVG_NUMBER.findall(s)]
 
 
 def multiply(m1, m2):

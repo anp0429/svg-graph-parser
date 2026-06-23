@@ -8,3 +8,6 @@ fetch_samples.py
 wiki_samples/
 fetch_samples.py
 wiki_samples/
+fetch.log
+pkg.zip
+*.zip

@@ -1,16 +1,16 @@
 """World 1 reconstruction on the universal loader.
 
-This is the loader-based pipeline. Unlike the original Flowgorithm-only path,
-it consumes resolved drawables (use-instanced, transform-composed, all
-primitive types) and so handles real Inkscape and draw.io output.
+Consumes resolved drawables (use-instanced, transform-composed, all primitive
+types) and reconstructs a directed graph from geometry.
 
 Stages:
   1. load drawables (core.loader) and text (core.text_reader)
   2. classify each drawable: shape, connector, or arrowhead
   3. associate each arrowhead to the nearest connector endpoint
   4. drop decorations (a connector with both ends inside one shape, no head)
-  5. attach each text run to the shape that contains its anchor
-  6. build directed edges, direction from the arrowhead tip
+  5. containment: a shape that contains other shapes is a group, not a node
+  6. attach each text run to the shape that contains it
+  7. build edges: directed from the arrowhead tip; headless lines undirected
 """
 
 import math
@@ -19,10 +19,22 @@ from ..core.loader import load, _style_fill
 from ..core.text_reader import load_text
 from ..core.containment import assign_containment
 from .constants import ARROWHEAD_MAX_SIDE, ATTACH_TOL, MATCH_TOL, TEXT_PAD
+from ..core.point_match import match_shape
+# Scale-relative knobs. Move to constants.py once you are happy with them.
+MATCH_TOL_FACTOR = 0.6      # match tolerance = this * typical node size
+TRAVEL_BACKOFF_FRAC = 0.15  # read direction over this fraction of connector length
 
+MIN_EDGE_CONFIDENCE = 1.0 - MATCH_TOL_FACTOR   # = 0.4, see note below
+
+# ---------------------------------------------------------------- geometry helpers
 
 def _dist(a, b):
     return math.hypot(a[0] - b[0], a[1] - b[1])
+
+
+def _unit(dx, dy):
+    n = math.hypot(dx, dy)
+    return (0.0, 0.0) if n == 0 else (dx / n, dy / n)
 
 
 def _point_in_box(p, box, pad=0.0):
@@ -38,13 +50,61 @@ def _point_to_box_dist(p, box):
     return math.hypot(dx, dy)
 
 
+def _center(box):
+    return ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2)
+
+
+def _connector_length(points):
+    return sum(_dist(points[i], points[i + 1]) for i in range(len(points) - 1))
+
+
+def _travel_at_end(points, at_last_end, backoff):
+    """Unit vector out through the chosen end, ignoring a tiny last segment.
+
+    Walk inward from the end until we have covered `backoff` of path length,
+    then take direction from that inner point to the end. A small kink or
+    rounded corner at the very tip no longer flips the direction.
+    """
+    seq = list(reversed(points)) if at_last_end else list(points)
+    tip, ref = seq[0], seq[-1]
+    acc, prev = 0.0, tip
+    for p in seq[1:]:
+        acc += _dist(prev, p)
+        prev = p
+        if acc >= backoff:
+            ref = p
+            break
+    return _unit(tip[0] - ref[0], tip[1] - ref[1])
+
+
+def _typical_node_size(shapes):
+    """Median bbox diagonal: the characteristic length the file is drawn at."""
+    diags = sorted(math.hypot(s.bbox[2] - s.bbox[0], s.bbox[3] - s.bbox[1])
+                   for s in shapes)
+    return diags[len(diags) // 2] if diags else None
+
+
+def _arrowhead_tip(head, travel):
+    cx = (head.bbox[0] + head.bbox[2]) / 2
+    cy = (head.bbox[1] + head.bbox[3]) / 2
+    tx, ty = travel
+    best, best_proj = None, None
+    for v in head.points:
+        proj = (v[0] - cx) * tx + (v[1] - cy) * ty
+        if best is None or proj > best_proj:
+            best, best_proj = v, proj
+    return best
+
+
+
+# ---------------------------------------------------------------- pipeline stages
+
 def classify(els, canvas=None):
     """Tag each drawable with a role. Sets el.role/head/text.
 
     rect, circle, ellipse are closed by type, so they are nodes regardless of
-    fill (stroke-only boxes are common in block diagrams). For paths and
-    polygons we use closure: a closed small shape is an arrowhead, an open
-    shape is a connector line, a closed large shape is a node.
+    fill. For paths and polygons we use closure: a closed small shape is an
+    arrowhead, an open shape is a connector, a closed large shape is a node.
     """
     cw, ch = (canvas or (0, 0))
     canvas_area = cw * ch
@@ -69,7 +129,6 @@ def classify(els, canvas=None):
         # path or polygon
         closed = getattr(e, "closed", None)
         if closed is None:
-            # fall back to fill if closure unknown
             fill = (_style_fill(e.attrib) or "none").lower()
             closed = fill not in ("none", "")
         if closed and side <= ARROWHEAD_MAX_SIDE:
@@ -110,17 +169,13 @@ def filter_decorations(els):
     return dropped
 
 
-def _center(box):
-    return ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2)
-
-
 def attach_text(els, text_runs):
     """Attach node labels to shapes. Return runs that are NOT node labels.
 
-    A run is a node label only if it sits strictly inside a shape and is
-    closer to that shape's center than to any connector endpoint. Branch
-    labels like "Yes" and "No" sit near a connector end and near a shape
-    edge, so they fail this test and are returned as edge-label candidates.
+    A run is a node label only if it sits strictly inside a shape and is closer
+    to that shape's center than to any connector endpoint. Branch labels like
+    "Yes"/"No" sit near a connector end, so they fail this test and are
+    returned as edge-label candidates.
     """
     shapes = [e for e in els if e.role == "shape"]
     connectors = [e for e in els if e.role == "connector"]
@@ -131,7 +186,6 @@ def attach_text(els, text_runs):
 
     leftovers = []
     for t in text_runs:
-        # nearest shape that strictly contains the anchor
         host, host_d = None, None
         for s in shapes:
             if _point_in_box(t.anchor, s.bbox, pad=0.0):
@@ -141,7 +195,6 @@ def attach_text(els, text_runs):
         if host is None:
             leftovers.append(t)
             continue
-        # is it closer to a connector endpoint than to the shape center?
         nearest_ep = min((_dist(t.anchor, e) for e in endpoints), default=1e9)
         if nearest_ep < host_d:
             leftovers.append(t)  # behaves like an edge label, not a node label
@@ -150,69 +203,67 @@ def attach_text(els, text_runs):
     return leftovers
 
 
-def _arrowhead_tip(head, travel):
-    cx = (head.bbox[0] + head.bbox[2]) / 2
-    cy = (head.bbox[1] + head.bbox[3]) / 2
-    tx, ty = travel
-    best, best_proj = None, None
-    for v in head.points:
-        proj = (v[0] - cx) * tx + (v[1] - cy) * ty
-        if best is None or proj > best_proj:
-            best, best_proj = v, proj
-    return best
-
-
-def _unit(dx, dy):
-    n = math.hypot(dx, dy)
-    return (0.0, 0.0) if n == 0 else (dx / n, dy / n)
-
-
-def _nearest_shape(point, shapes, tol):
-    best, best_d = None, tol
-    for s in shapes:
-        d = _point_to_box_dist(point, s.bbox)
-        if d <= best_d:
-            best, best_d = s, d
-    return best
-
-
 class Edge:
-    def __init__(self, source, target, connector):
+    def __init__(self, source, target, connector, directed=True, style=None,
+                 source_confidence=1.0, target_confidence=1.0):
         self.source = source
         self.target = target
         self.connector = connector
+        self.directed = directed
         self.label = None
-
+        self.style = style
+        self.source_confidence = source_confidence
+        self.target_confidence = target_confidence
 
 def build_edges(els):
     shapes = [e for e in els if e.role == "shape"]
-    connectors = [e for e in els if e.role == "connector" and e.head is not None]
+    connectors = [e for e in els if e.role == "connector"]
+
+    char_len = _typical_node_size(shapes)
+
     edges = []
     for c in connectors:
+        if len(c.points) < 2:
+            continue
         a, b = c.points[0], c.points[-1]
-        hc = ((c.head.bbox[0] + c.head.bbox[2]) / 2,
-              (c.head.bbox[1] + c.head.bbox[3]) / 2)
-        if _dist(hc, b) <= _dist(hc, a):
-            source_end, target_end = a, b
-            travel = _unit(b[0] - c.points[-2][0], b[1] - c.points[-2][1])
+        style = getattr(c, "stroke_style", None)
+        backoff = max(TRAVEL_BACKOFF_FRAC * _connector_length(c.points), 1.0)
+
+        # CASE 1: separate arrowhead. Direction from the tip.
+        if c.head is not None:
+            hc = ((c.head.bbox[0] + c.head.bbox[2]) / 2,
+                  (c.head.bbox[1] + c.head.bbox[3]) / 2)
+            at_last = _dist(hc, b) <= _dist(hc, a)
+            source_end = a if at_last else b
+            travel = _travel_at_end(c.points, at_last, backoff)
+            tip = _arrowhead_tip(c.head, travel)
+            target, tconf = match_shape(tip, shapes, char_len)
+            source, sconf = match_shape(source_end, shapes, char_len)
+            if (source is not None and target is not None and source is not target
+                    and sconf >= MIN_EDGE_CONFIDENCE and tconf >= MIN_EDGE_CONFIDENCE):
+                edges.append(Edge(source, target, c, directed=True, style=style,
+                                  source_confidence=sconf, target_confidence=tconf))
+
+        # CASE 2 (combined arrow) HOOK: arrows.py finds tip/tail, not wired yet.
+        # When wired: tip/tail -> match_shape each -> directed Edge with confidences.
+
+        # CASE 3: headless line. Emit undirected.
         else:
-            source_end, target_end = b, a
-            travel = _unit(a[0] - c.points[1][0], a[1] - c.points[1][1])
-        tip = _arrowhead_tip(c.head, travel)
-        target = _nearest_shape(tip, shapes, MATCH_TOL)
-        source = _nearest_shape(source_end, shapes, MATCH_TOL)
-        if source is not None and target is not None and source is not target:
-            edges.append(Edge(source, target, c))
+            s_a, ca = match_shape(a, shapes, char_len)
+            s_b, cb = match_shape(b, shapes, char_len)
+            if (s_a is not None and s_b is not None and s_a is not s_b
+                    and ca >= MIN_EDGE_CONFIDENCE and cb >= MIN_EDGE_CONFIDENCE):
+                ends = sorted([(s_a, ca), (s_b, cb)],
+                              key=lambda x: (x[0].bbox[0], x[0].bbox[1]))
+                edges.append(Edge(ends[0][0], ends[1][0], c, directed=False, style=style,
+                                  source_confidence=ends[0][1],
+                                  target_confidence=ends[1][1]))
+
     return edges
 
 
 def attach_edge_labels(edges, leftover_runs):
-    """Assign each leftover text run to the edge whose connector it sits on.
-
-    A branch label (Yes/No) sits near its connector. We attach each leftover
-    run to the edge whose connector has the nearest point to the run anchor,
-    within a tolerance.
-    """
+    """Assign each leftover text run to the edge whose connector it sits on."""
     for run in leftover_runs:
         best, best_d = None, MATCH_TOL
         for e in edges:
@@ -229,7 +280,6 @@ def reconstruct_universal(svg_path):
     classify(els, canvas)
     associate_arrowheads(els)
     filter_decorations(els)
-    # Containment: a shape that contains other shapes is a group, not a node.
     shapes = [e for e in els if e.role == "shape"]
     leaves, containers = assign_containment(shapes)
     for c in containers:
@@ -256,6 +306,8 @@ if __name__ == "__main__":
               % (b[0], b[1], b[2], b[3], _label(s)))
     print()
     for e in edges:
+        arrow = "->" if e.directed else "--"
         tag = (" [%s]" % e.label) if e.label else ""
-        print("  %-26s -%s-> %s"
-              % (_label(e.source), e.label or "", _label(e.target)))
+        st = (" {%s}" % e.style) if e.style and e.style != "solid" else ""
+        print("  %-26s %s %s%s%s"
+              % (_label(e.source), arrow, _label(e.target), tag, st))

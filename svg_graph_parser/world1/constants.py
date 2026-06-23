@@ -20,3 +20,4 @@ MATCH_TOL = 60.0             # connector end to nearest shape, max distance
 
 # Text association
 TEXT_PAD = 10.0              # slack when testing a text anchor inside a shape
+

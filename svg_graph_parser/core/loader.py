@@ -117,6 +117,12 @@ class Element:
         xs = [p[0] for p in points]
         ys = [p[1] for p in points]
         self.bbox = (min(xs), min(ys), max(xs), max(ys))
+        self.bbox = (min(xs), min(ys), max(xs), max(ys))
+        # paint: raw, labeled by what it is, never by what it means.
+        self.fill = _style_attr(attrib, "fill")
+        self.stroke = _style_attr(attrib, "stroke")
+        self.stroke_style = _stroke_style(attrib)   # solid | dashed | dotted
+        self.stroke_width = _style_attr(attrib, "stroke-width")
 
 
 def load(svg_path):
@@ -200,6 +206,27 @@ def _style_fill(attrib):
                 return v.strip()
     return None
 
+def _style_attr(attrib, key):
+    """Read a paint property from a direct attribute or the style string."""
+    if key in attrib:
+        return attrib[key].strip()
+    for part in attrib.get("style", "").split(";"):
+        if ":" in part:
+            k, v = part.split(":", 1)
+            if k.strip() == key:
+                return v.strip()
+    return None
+
+
+def _stroke_style(attrib):
+    """Normalize stroke-dasharray to 'solid' | 'dashed' | 'dotted'."""
+    dash = _style_attr(attrib, "stroke-dasharray")
+    if not dash or dash in ("none", "0"):
+        return "solid"
+    nums = [float(x) for x in dash.replace(",", " ").split() if x]
+    if not nums:
+        return "solid"
+    return "dotted" if max(nums) <= 2.0 else "dashed"   
 
 if __name__ == "__main__":
     import sys

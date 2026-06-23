@@ -85,17 +85,44 @@ def filter_decorations(els):
     return dropped
 
 
+def _center(box):
+    return ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2)
+
+
 def attach_text(els, text_runs):
+    """Attach node labels to shapes. Return runs that are NOT node labels.
+
+    A run is a node label only if it sits strictly inside a shape and is
+    closer to that shape's center than to any connector endpoint. Branch
+    labels like "Yes" and "No" sit near a connector end and near a shape
+    edge, so they fail this test and are returned as edge-label candidates.
+    """
     shapes = [e for e in els if e.role == "shape"]
+    connectors = [e for e in els if e.role == "connector"]
+    endpoints = []
+    for c in connectors:
+        endpoints.append(c.points[0])
+        endpoints.append(c.points[-1])
+
+    leftovers = []
     for t in text_runs:
-        best, best_d = None, None
+        # nearest shape that strictly contains the anchor
+        host, host_d = None, None
         for s in shapes:
-            if _point_in_box(t.anchor, s.bbox, pad=TEXT_PAD):
-                d = _point_to_box_dist(t.anchor, s.bbox)
-                if best is None or d < best_d:
-                    best, best_d = s, d
-        if best is not None:
-            best.text = (best.text + " " + t.text) if best.text else t.text
+            if _point_in_box(t.anchor, s.bbox, pad=0.0):
+                d = _dist(t.anchor, _center(s.bbox))
+                if host is None or d < host_d:
+                    host, host_d = s, d
+        if host is None:
+            leftovers.append(t)
+            continue
+        # is it closer to a connector endpoint than to the shape center?
+        nearest_ep = min((_dist(t.anchor, e) for e in endpoints), default=1e9)
+        if nearest_ep < host_d:
+            leftovers.append(t)  # behaves like an edge label, not a node label
+        else:
+            host.text = (host.text + " " + t.text) if host.text else t.text
+    return leftovers
 
 
 def _arrowhead_tip(head, travel):
@@ -124,6 +151,14 @@ def _nearest_shape(point, shapes, tol):
     return best
 
 
+class Edge:
+    def __init__(self, source, target, connector):
+        self.source = source
+        self.target = target
+        self.connector = connector
+        self.label = None
+
+
 def build_edges(els):
     shapes = [e for e in els if e.role == "shape"]
     connectors = [e for e in els if e.role == "connector" and e.head is not None]
@@ -142,8 +177,26 @@ def build_edges(els):
         target = _nearest_shape(tip, shapes, MATCH_TOL)
         source = _nearest_shape(source_end, shapes, MATCH_TOL)
         if source is not None and target is not None and source is not target:
-            edges.append((source, target))
+            edges.append(Edge(source, target, c))
     return edges
+
+
+def attach_edge_labels(edges, leftover_runs):
+    """Assign each leftover text run to the edge whose connector it sits on.
+
+    A branch label (Yes/No) sits near its connector. We attach each leftover
+    run to the edge whose connector has the nearest point to the run anchor,
+    within a tolerance.
+    """
+    for run in leftover_runs:
+        best, best_d = None, MATCH_TOL
+        for e in edges:
+            for p in e.connector.points:
+                d = _dist(run.anchor, p)
+                if d < best_d:
+                    best, best_d = e, d
+        if best is not None:
+            best.label = (best.label + " " + run.text) if best.label else run.text
 
 
 def reconstruct_universal(svg_path):
@@ -151,9 +204,10 @@ def reconstruct_universal(svg_path):
     classify(els)
     associate_arrowheads(els)
     filter_decorations(els)
-    attach_text(els, load_text(svg_path))
+    leftovers = attach_text(els, load_text(svg_path))
     shapes = [e for e in els if e.role == "shape"]
     edges = build_edges(els)
+    attach_edge_labels(edges, leftovers)
     return shapes, edges
 
 
@@ -171,5 +225,7 @@ if __name__ == "__main__":
         print("  SHAPE (%5.0f,%5.0f,%5.0f,%5.0f) text=%r"
               % (b[0], b[1], b[2], b[3], _label(s)))
     print()
-    for src, dst in edges:
-        print("  %-28s -> %s" % (_label(src), _label(dst)))
+    for e in edges:
+        tag = (" [%s]" % e.label) if e.label else ""
+        print("  %-26s -%s-> %s"
+              % (_label(e.source), e.label or "", _label(e.target)))

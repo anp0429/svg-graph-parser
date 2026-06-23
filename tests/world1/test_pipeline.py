@@ -14,7 +14,7 @@ import pathlib
 from svg_graph_parser.world1.pipeline import reconstruct_universal
 from svg_graph_parser.core.text_reader import load_text
 
-SAMPLE = pathlib.Path(__file__).parent.parent / "samples" / "lamp_structure.svg"
+SAMPLE = pathlib.Path(__file__).parent.parent / "samples" / "lamp_inkscape.svg"
 
 
 def test_runs_without_crashing():
@@ -36,13 +36,34 @@ def test_switch_picks_default_language():
     assert "Di gumagana" not in texts
 
 
+def test_node_labels_are_clean():
+    # Branch words must not pollute node labels.
+    shapes, edges = reconstruct_universal(str(SAMPLE))
+    labels = {(s.text or "") for s in shapes}
+    assert "Lamp plugged in?" in labels
+    assert "Bulb burned out?" in labels
+    assert not any(l.endswith("No") or l.endswith("Yes") for l in labels)
+
+
+def test_edge_labels_attached():
+    shapes, edges = reconstruct_universal(str(SAMPLE))
+    labels = [e.label for e in edges if e.label]
+    # Both branch words appear as edge labels, not node text.
+    assert "Yes" in labels
+    assert "No" in labels
+    # The No branch out of the plugged-in diamond reaches Plug in lamp.
+    plugged = next(s for s in shapes if s.text and "plugged in" in s.text)
+    no_edges = [e for e in edges if e.source is plugged and e.label == "No"]
+    assert no_edges
+    assert any("Plug in lamp" in (e.target.text or "") for e in no_edges)
+
+
 def test_decision_node_fans_out():
     shapes, edges = reconstruct_universal(str(SAMPLE))
-    # The "plugged in?" decision diamond should have two out-edges.
     plugged = [s for s in shapes if s.text and "plugged in" in s.text]
     assert plugged
-    out = [d for s, d in edges if s is plugged[0]]
-    assert len(out) >= 1
+    out = [e for e in edges if e.source is plugged[0]]
+    assert len(out) == 2
 
 
 def test_spine_present():

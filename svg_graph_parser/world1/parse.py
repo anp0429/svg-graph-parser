@@ -15,8 +15,8 @@ Survivors with an arrowhead are real connectors.
 import math
 import xml.etree.ElementTree as ET
 
-from .geometry_world1 import path_bbox, parse_points, points_bbox
-from .constants_world1 import ARROWHEAD_MAX_SIDE, ATTACH_TOL, TEXT_PAD
+from ..core.geometry_world1 import path_bbox, parse_points, points_bbox
+from .constants import ARROWHEAD_MAX_SIDE, ATTACH_TOL, TEXT_PAD
 
 NS = "{http://www.w3.org/2000/svg}"
 

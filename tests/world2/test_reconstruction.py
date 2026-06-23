@@ -1,9 +1,9 @@
 import pathlib
 
 from svg_graph_parser import BBox, match_endpoint, parse_svg, truth_pairs
-from svg_graph_parser.model import Node
+from svg_graph_parser.world2.model import Node
 
-SAMPLE = (pathlib.Path(__file__).parent / "samples" / "triangle.drawio.svg").read_text()
+SAMPLE = (pathlib.Path(__file__).parent.parent / "samples" / "triangle.drawio.svg").read_text()
 
 
 def test_distance_zero_inside_box():
@@ -38,7 +38,7 @@ def test_real_flowchart_connectivity():
     precision is allowed one false-positive edge until the decorative-stroke
     filter lands.
     """
-    svg = (pathlib.Path(__file__).parent / "samples" / "flowchart.drawio.svg").read_text()
+    svg = (pathlib.Path(__file__).parent.parent / "samples" / "flowchart.drawio.svg").read_text()
     g = parse_svg(svg)
     from svg_graph_parser import score
     r = score(g, svg)
@@ -48,9 +48,9 @@ def test_real_flowchart_connectivity():
 def test_geometry_stage1_on_real_export():
     """Stage 1: classify primitives and type arrowheads from geometry alone."""
     import re, xml.etree.ElementTree as ET
-    from svg_graph_parser.geometry import classify_primitive, classify_arrowhead, Primitive, Head
+    from svg_graph_parser.world2.geometry import classify_primitive, classify_arrowhead, Primitive, Head
 
-    svg = (pathlib.Path(__file__).parent / "samples" / "flowchart.drawio.svg").read_text()
+    svg = (pathlib.Path(__file__).parent.parent / "samples" / "flowchart.drawio.svg").read_text()
     root = ET.fromstring(svg)
     num = re.compile(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?")
     ln = lambda t: t.rsplit("}", 1)[-1]
@@ -86,7 +86,7 @@ def test_geometry_stage1_on_real_export():
 def test_geometric_pipeline_wires_stage1():
     """The geometric pipeline routes through geometry.py and matches the oracle."""
     from svg_graph_parser import parse_svg_geometric, score
-    svg = (pathlib.Path(__file__).parent / "samples" / "flowchart.drawio.svg").read_text()
+    svg = (pathlib.Path(__file__).parent.parent / "samples" / "flowchart.drawio.svg").read_text()
     g = parse_svg_geometric(svg)
     r = score(g, svg)
     assert r["recall"] == 1.0 and r["precision"] >= 0.95

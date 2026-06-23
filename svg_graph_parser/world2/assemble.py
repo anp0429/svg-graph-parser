@@ -10,7 +10,7 @@ import re
 import xml.etree.ElementTree as ET
 
 from .geometry import classify_primitive, classify_arrowhead, Primitive, Head
-from .matcher import match_endpoint
+from ..core.matcher import match_endpoint
 from .model import Edge, Graph
 from .svg_loader import load
 

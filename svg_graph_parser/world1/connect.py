@@ -13,8 +13,8 @@ so it holds for arrows pointing any way, touching or not.
 
 import math
 
-from .parse_world1 import parse_world1
-from .constants_world1 import MATCH_TOL
+from .parse import parse_world1
+from .constants import MATCH_TOL
 
 
 def _dist(a, b):

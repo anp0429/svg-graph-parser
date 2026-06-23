@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="324" height="442">
+  <g transform="translate(-3, 1)" id="g2203">
+    <path d="M 89.625,193.1875 L 89.625,226.5" style="fill: none; stroke: rgb(0,0,0);" id="path2197"/>
+    <path d="M 81.0625,221.75 L 98.1875,221.75 L 89.75,238.875 L 81.0625,221.75 z " style="fill: rgb(255,255,255); stroke: rgb(0,0,0);" id="path2201"/>
+  </g>
+  <use transform="translate(0, -145)" id="use2207" xlink:href="#g2203"/>
+  <use transform="translate(0, 145.875)" id="use2209" xlink:href="#g2203"/>
+  <use transform="matrix(0, -1, 1, 0, -33.7812, 379.375)" id="use2211" xlink:href="#g2203"/>
+  <use transform="matrix(0, -1, 1, 0, -33.7812, 233.875)" id="use2213" xlink:href="#g2203"/>
+  <rect width="145.5" height="42.5" rx="10" ry="10" x="13.875" y="9.75" style="fill: rgb(255,191,201); stroke: rgb(0,0,0);" id="rect1312"/>
+  <rect width="108.91647" height="42.5" rx="10" ry="10" x="206.57301" y="125.75" style="fill: rgb(139,239,145); stroke: rgb(0,0,0);" id="rect2187"/>
+  <use transform="translate(2.70378, 145.75)" id="use2189" xlink:href="#rect2187"/>
+  <use transform="translate(-174.406, 262.875)" id="use2191" xlink:href="#rect2187"/>
+  <path d="M 86.75,96.75 L 9.25,147.25 L 86.5,197.75 L 164,147.25 L 86.75,96.75 z " style="fill: rgb(255,255,138); stroke: rgb(0,0,0);" id="path2193"/>
+  <use transform="translate(0, 145.5)" id="use2195" xlink:href="#path2193"/>
+</svg>

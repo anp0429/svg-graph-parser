@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .model import Node
+from ..world2.model import Node
 
 
 def match_endpoint(

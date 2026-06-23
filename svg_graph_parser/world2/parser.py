@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from .model import Edge, Graph
-from .matcher import match_endpoint
+from ..core.matcher import match_endpoint
 from .svg_loader import load
 
 

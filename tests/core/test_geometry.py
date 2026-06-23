@@ -4,7 +4,7 @@ oracle. Each expected bbox is worked out by hand from the shape.
 Run from the repo root:  uv run pytest tests/test_geometry_world1.py -v
 """
 
-from svg_graph_parser.geometry_world1 import path_bbox, parse_points, points_bbox
+from svg_graph_parser.core.geometry_world1 import path_bbox, parse_points, points_bbox
 
 TOL = 0.5
 

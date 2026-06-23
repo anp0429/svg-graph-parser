@@ -11,9 +11,9 @@ Run from the repo root:
 
 import pathlib
 
-from svg_graph_parser.connect_world1 import reconstruct
+from svg_graph_parser.world1.connect import reconstruct
 
-SAMPLE = pathlib.Path(__file__).parent / "samples" / "flowchart_world1.svg"
+SAMPLE = pathlib.Path(__file__).parent.parent / "samples" / "flowchart_world1.svg"
 
 
 def _key(text):

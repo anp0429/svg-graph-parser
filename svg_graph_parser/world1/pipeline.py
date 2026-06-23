@@ -17,6 +17,7 @@ import math
 
 from ..core.loader import load, _style_fill
 from ..core.text_reader import load_text
+from ..core.containment import assign_containment
 from .constants import ARROWHEAD_MAX_SIDE, ATTACH_TOL, MATCH_TOL, TEXT_PAD
 
 
@@ -228,6 +229,11 @@ def reconstruct_universal(svg_path):
     classify(els, canvas)
     associate_arrowheads(els)
     filter_decorations(els)
+    # Containment: a shape that contains other shapes is a group, not a node.
+    shapes = [e for e in els if e.role == "shape"]
+    leaves, containers = assign_containment(shapes)
+    for c in containers:
+        c.role = "container"   # remove from the node set
     leftovers = attach_text(els, load_text(svg_path))
     shapes = [e for e in els if e.role == "shape"]
     edges = build_edges(els)

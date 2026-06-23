@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="800">
+  <rect x="50" y="50" width="500" height="400" fill="none" stroke="#000"/>
+  <text x="280" y="80">Causes</text>
+  <rect x="100" y="120" width="180" height="80" fill="none" stroke="#000"/>
+  <text x="190" y="165">Water vapor</text>
+  <rect x="100" y="240" width="180" height="80" fill="none" stroke="#000"/>
+  <text x="190" y="285">Methane</text>
+  <rect x="320" y="120" width="180" height="80" fill="none" stroke="#000"/>
+  <text x="410" y="165">CO2</text>
+  <rect x="700" y="200" width="220" height="120" fill="none" stroke="#000"/>
+  <text x="810" y="265">Warming</text>
+  <path d="M550,260 L700,260" fill="none" stroke="#000"/>
+  <polygon points="700,260 685,253 685,267" fill="#000"/>
+</svg>

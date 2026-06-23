@@ -14,4 +14,7 @@
   <use transform="translate(-174.406, 262.875)" id="use2191" xlink:href="#rect2187"/>
   <path d="M 86.75,96.75 L 9.25,147.25 L 86.5,197.75 L 164,147.25 L 86.75,96.75 z " style="fill: rgb(255,255,138); stroke: rgb(0,0,0);" id="path2193"/>
   <use transform="translate(0, 145.5)" id="use2195" xlink:href="#path2193"/>
+  <svg:switch><svg:text x="86" y="35" systemLanguage="tl"><svg:tspan>Di gumagana</svg:tspan></svg:text><svg:text x="86" y="35"><svg:tspan>Lamp doesn't work</svg:tspan></svg:text></svg:switch>
+  <svg:switch><svg:text x="86" y="141" systemLanguage="tl"><svg:tspan>Nakasaksak</svg:tspan></svg:text><svg:text x="86" y="141"><svg:tspan>Lamp plugged in?</svg:tspan></svg:text></svg:switch>
+  <svg:switch><svg:text x="86" y="288" systemLanguage="tl"><svg:tspan>Sira na</svg:tspan></svg:text><svg:text x="86" y="288"><svg:tspan>Bulb burned out?</svg:tspan></svg:text></svg:switch>
 </svg>

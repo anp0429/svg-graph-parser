@@ -215,6 +215,31 @@ class Edge:
         self.source_confidence = source_confidence
         self.target_confidence = target_confidence
 
+def _marker_direction(c):
+    """Direction from SVG marker refs, if present. Returns 'end', 'start', or None.
+
+    A connector with marker-end has its arrowhead at the LAST point (target side);
+    marker-start puts it at the FIRST point. This is stated explicitly by the SVG,
+    so no geometry is needed. marker-end wins if both are present.
+    """
+    style = c.attrib.get("style", "")
+    def present(key):
+        if key in c.attrib and c.attrib[key] not in ("none", ""):
+            return True
+        # style string form: "marker-end:url(#...)"
+        for part in style.split(";"):
+            if ":" in part:
+                k, v = part.split(":", 1)
+                if k.strip() == key and v.strip() not in ("none", ""):
+                    return True
+        return False
+    if present("marker-end"):
+        return "end"
+    if present("marker-start"):
+        return "start"
+    return None
+
+
 def build_edges(els):
     shapes = [e for e in els if e.role == "shape"]
     connectors = [e for e in els if e.role == "connector"]
@@ -228,6 +253,22 @@ def build_edges(els):
         a, b = c.points[0], c.points[-1]
         style = getattr(c, "stroke_style", None)
         backoff = max(TRAVEL_BACKOFF_FRAC * _connector_length(c.points), 1.0)
+
+        # CASE 0: SVG marker direction (marker-end / marker-start). Stated by the
+        # SVG itself, so direction is exact with no tip detection.
+        mdir = _marker_direction(c)
+        if c.head is None and mdir is not None:
+            if mdir == "end":
+                source_end, target_end = a, b
+            else:
+                source_end, target_end = b, a
+            target, tconf = match_shape(target_end, shapes, char_len)
+            source, sconf = match_shape(source_end, shapes, char_len)
+            if (source is not None and target is not None and source is not target
+                    and sconf >= MIN_EDGE_CONFIDENCE and tconf >= MIN_EDGE_CONFIDENCE):
+                edges.append(Edge(source, target, c, directed=True, style=style,
+                                  source_confidence=sconf, target_confidence=tconf))
+            continue
 
         # CASE 1: separate arrowhead. Direction from the tip.
         if c.head is not None:

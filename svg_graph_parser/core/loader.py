@@ -152,10 +152,17 @@ def load(svg_path):
     out = []
     group_counter = [0]
 
-    def walk(el, matrix, group_id, depth):
+    def walk(el, matrix, group_id, depth, via_use=False):
         if depth > 40:
             return
         tag = _tag(el)
+        # definition blocks are not drawable where they are DEFINED: their
+        # contents are placed by reference (<use>). Skip them during normal
+        # descent, but allow rendering when reached through a <use> (via_use).
+        if tag in ("defs", "marker", "clipPath", "mask", "pattern"):
+            return
+        if tag == "symbol" and not via_use:
+            return
         local_m = parse_transform(el.attrib.get("transform"))
         m = multiply(matrix, local_m)
 
@@ -167,7 +174,7 @@ def load(svg_path):
                     ux = _num(el.attrib, "x")
                     uy = _num(el.attrib, "y")
                     um = multiply(m, (1, 0, 0, 1, ux, uy))
-                    walk(target, um, group_id, depth + 1)
+                    walk(target, um, group_id, depth + 1, via_use=True)
             return
 
         if tag == "g" or tag == "svg" or tag == "switch":

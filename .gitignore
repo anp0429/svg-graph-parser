@@ -11,3 +11,4 @@ wiki_samples/
 fetch.log
 pkg.zip
 *.zip
+.mcp.json

@@ -19,7 +19,25 @@ Design rules carried from the rest of the project:
 
 from collections import deque
 
-from ..world1.pipeline import reconstruct_universal
+from ..world1.pipeline import reconstruct_universal, build_tree
+
+
+def _structured_rows(runs):
+    """Group a table's text runs into rows (by y) then columns (by x).
+
+    An ER row reads like  [key-flag | column-name | type]; grouping by y band
+    then sorting by x recovers exactly that, with no tool metadata.
+    """
+    if not runs:
+        return []
+    band = {}
+    for r in runs:
+        band.setdefault(round(r.anchor[1] / 6), []).append(r)
+    rows = []
+    for y in sorted(band):
+        cells = [r.text for r in sorted(band[y], key=lambda r: r.anchor[0])]
+        rows.append(cells)
+    return rows
 
 
 class Node:
@@ -31,6 +49,10 @@ class Node:
         self.stroke = getattr(shape, "stroke", None)
         self.stroke_style = getattr(shape, "stroke_style", None)
         self._shape = shape
+        # filled in from the lossless tree: structured contents of this node's
+        # group (e.g. an ER table's columns). Empty for a plain flowchart box.
+        self.content = []          # list[list[str]] rows of cells
+        self.content_text = ""     # flat searchable text of the whole group
 
     def __repr__(self):
         return f"Node({self.id}, {self.label!r})"
@@ -81,7 +103,55 @@ class SceneGraph:
     @classmethod
     def from_svg(cls, path):
         shapes, edges = reconstruct_universal(path)
-        return cls(shapes, edges)
+        g = cls(shapes, edges)
+        g._attach_tree(path)
+        return g
+
+    def _attach_tree(self, path):
+        """Build the lossless containment tree and fold each group's full text
+        (an ER table's columns, a container's members) onto the node that
+        represents it, so grouped boxes stay ONE node but keep all their detail.
+        """
+        boxes = build_tree(path)
+        self.tree = boxes
+
+        # the outermost frames (top-level containers) are scaffolding, not tables
+        frame_ids = {id(b) for b in boxes
+                     if b.parent is None and getattr(b, "is_container", False)}
+
+        def entity(b):
+            """The group box this box belongs to: climb to the outermost
+            ancestor that is not a top-level frame."""
+            cur, p = b, b.parent
+            while p is not None and id(p) not in frame_ids:
+                cur, p = p, p.parent
+            return cur
+
+        def subtree_runs(root):
+            out = list(getattr(root, "runs", []))
+            for b in boxes:
+                anc = b.parent
+                while anc is not None:
+                    if anc is root:
+                        out.extend(getattr(b, "runs", []))
+                        break
+                    anc = anc.parent
+            return out
+
+        # map a flat node (from the flat graph) to its tree box by geometry,
+        # then to its entity, and fold the entity's whole subtree text onto it
+        by_bbox = {}
+        for b in boxes:
+            by_bbox.setdefault(tuple(round(x) for x in b.bbox), b)
+
+        for node in self.nodes.values():
+            tb = by_bbox.get(tuple(round(x) for x in node.bbox))
+            if tb is None:
+                continue
+            ent = entity(tb)
+            runs = subtree_runs(ent)
+            node.content = _structured_rows(runs)
+            node.content_text = " ".join(r.text for r in runs)
 
     # ---- lenses (the MCP query surface) ----
     def successors(self, nid):
@@ -115,9 +185,30 @@ class SceneGraph:
         return None
 
     def find_by_text(self, substr):
-        """Nodes whose label contains substr (case-insensitive)."""
+        """Nodes whose label OR folded content contains substr (case-insensitive).
+        Searching content means an agent can locate a node by a column name
+        (e.g. 'customer_id'), not only by its title."""
         s = substr.lower()
-        return [n for n in self.nodes.values() if s in n.label.lower()]
+        return [n for n in self.nodes.values()
+                if s in n.label.lower() or s in n.content_text.lower()]
+
+    def content(self, nid):
+        """Containment lens: the structured contents of a node's group, as rows
+        of cells. For an ER table this is its columns: [[key, name, type], ...].
+        Empty for a plain box that contains nothing."""
+        n = self.nodes.get(nid)
+        return n.content if n else []
+
+    def children(self, nid):
+        """The boxes nested directly inside this node, from the lossless tree."""
+        n = self.nodes.get(nid)
+        if n is None:
+            return []
+        out = []
+        for b in getattr(self, "tree", []):
+            if getattr(b, "parent", None) is n._shape:
+                out.append(b)
+        return out
 
     def roots(self):
         """Entry points: have outgoing direction, no incoming. Nodes with only

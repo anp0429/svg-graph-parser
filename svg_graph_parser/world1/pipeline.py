@@ -145,6 +145,57 @@ def classify(els, canvas=None):
             e.role = "shape"
 
 
+HEAD_SIZE_FRAC = 0.25     # a head is smaller than this fraction of the median node
+HEAD_ATTACH_FRAC = 0.10   # head center within this fraction of median node of a shaft end
+
+
+def detect_endpoint_heads(els):
+    """Re-label small glyphs clustered at a connector's terminus as arrowheads.
+
+    classify() only recognises a closed filled triangle as a head. Real diagrams
+    end connectors with other glyphs: open forks (crow's foot = many), ticks
+    (bar = one), small circles (zero / optional). Those land in classify as
+    "connector" (open path) or "shape" (ellipse), so they are never attached.
+
+    Generic rule, no tool metadata: a primitive is a head when it is
+    (1) small relative to the median node, AND
+    (2) sitting at the endpoint of a longer connector (the shaft).
+    The size gate is what protects flat flowcharts -- a full-size node sits at
+    every connector end, but a node is ~median size, far above the gate, so it
+    is never mistaken for a head.
+    """
+    shapes = [e for e in els if e.role == "shape"]
+    node = _typical_node_size(shapes)
+    if not node:
+        return
+    size_max = HEAD_SIZE_FRAC * node
+    attach_tol = HEAD_ATTACH_FRAC * node
+
+    def side(e):
+        return max(e.bbox[2] - e.bbox[0], e.bbox[3] - e.bbox[1])
+
+    def length(e):
+        return _dist(e.points[0], e.points[-1])
+
+    # shafts = connectors long enough to span between shapes (not glyphs)
+    shafts = [e for e in els if e.role == "connector" and length(e) > size_max]
+
+    for e in els:
+        if e.role not in ("connector", "shape"):
+            continue
+        if getattr(e, "head", None) is not None:
+            continue                      # already a working arrow shaft, not a head
+        if side(e) == 0 or side(e) > size_max:
+            continue                      # too big to be a head -> protects nodes
+        c = ((e.bbox[0] + e.bbox[2]) / 2, (e.bbox[1] + e.bbox[3]) / 2)
+        for sh in shafts:
+            if sh is e:
+                continue
+            if min(_dist(c, sh.points[0]), _dist(c, sh.points[-1])) <= attach_tol:
+                e.role = "arrowhead"
+                break
+
+
 def associate_arrowheads(els):
     heads = [e for e in els if e.role == "arrowhead"]
     lines = [e for e in els if e.role == "connector"]
@@ -160,18 +211,45 @@ def associate_arrowheads(els):
             best.head = h
 
 
+def _smallest_containing(point, shapes):
+    """The min-area shape whose bbox contains the point, or None.
+
+    On a flat flowchart no shape nests inside another, so a point sits in at
+    most one box and this returns that box -- identical to the old test. On a
+    framed or nested diagram (Miro tables inside a board frame) a point can sit
+    in several boxes at once; the smallest one is the real node it belongs to,
+    never the giant frame.
+    """
+    best, best_area = None, None
+    for s in shapes:
+        b = s.bbox
+        if _point_in_box(point, b):
+            a = (b[2] - b[0]) * (b[3] - b[1])
+            if best_area is None or a < best_area:
+                best, best_area = s, a
+    return best
+
+
 def filter_decorations(els):
+    """Drop lines that are decorations, not connectors.
+
+    A headless line is a decoration only when BOTH ends resolve to the SAME
+    smallest containing shape -- i.e. it lives entirely inside one node (a box
+    border, an intra-table divider). A line whose two ends land in two
+    different smallest shapes is a real edge and is kept, even if a larger
+    frame happens to contain both ends.
+    """
     shapes = [e for e in els if e.role == "shape"]
     dropped = []
     for ln in [e for e in els if e.role == "connector"]:
         if ln.head is not None:
             continue
         a, b = ln.points[0], ln.points[-1]
-        for s in shapes:
-            if _point_in_box(a, s.bbox) and _point_in_box(b, s.bbox):
-                ln.role = "decoration"
-                dropped.append(ln)
-                break
+        sa = _smallest_containing(a, shapes)
+        sb = _smallest_containing(b, shapes)
+        if sa is not None and sa is sb:
+            ln.role = "decoration"
+            dropped.append(ln)
     return dropped
 
 
@@ -290,23 +368,34 @@ def build_edges(els):
                     and sconf >= MIN_EDGE_CONFIDENCE and tconf >= MIN_EDGE_CONFIDENCE):
                 edges.append(Edge(source, target, c, directed=True, style=style,
                                   source_confidence=sconf, target_confidence=tconf))
+            else:
+                # The directed read failed (tip landed badly, or a spurious head
+                # was attached). Don't drop the edge -- fall back to the raw
+                # endpoints as an undirected connection.
+                _emit_undirected(edges, c, a, b, shapes, char_len, style)
 
         # CASE 2 (combined arrow) HOOK: arrows.py finds tip/tail, not wired yet.
         # When wired: tip/tail -> match_shape each -> directed Edge with confidences.
 
         # CASE 3: headless line. Emit undirected.
         else:
-            s_a, ca = match_shape(a, shapes, char_len)
-            s_b, cb = match_shape(b, shapes, char_len)
-            if (s_a is not None and s_b is not None and s_a is not s_b
-                    and ca >= MIN_EDGE_CONFIDENCE and cb >= MIN_EDGE_CONFIDENCE):
-                ends = sorted([(s_a, ca), (s_b, cb)],
-                              key=lambda x: (x[0].bbox[0], x[0].bbox[1]))
-                edges.append(Edge(ends[0][0], ends[1][0], c, directed=False, style=style,
-                                  source_confidence=ends[0][1],
-                                  target_confidence=ends[1][1]))
+            _emit_undirected(edges, c, a, b, shapes, char_len, style)
 
     return edges
+
+
+def _emit_undirected(edges, c, a, b, shapes, char_len, style):
+    """Match both raw endpoints and emit an undirected edge if they land on two
+    distinct shapes. Shared by the headless case and the directed-fallback case."""
+    s_a, ca = match_shape(a, shapes, char_len)
+    s_b, cb = match_shape(b, shapes, char_len)
+    if (s_a is not None and s_b is not None and s_a is not s_b
+            and ca >= MIN_EDGE_CONFIDENCE and cb >= MIN_EDGE_CONFIDENCE):
+        ends = sorted([(s_a, ca), (s_b, cb)],
+                      key=lambda x: (x[0].bbox[0], x[0].bbox[1]))
+        edges.append(Edge(ends[0][0], ends[1][0], c, directed=False, style=style,
+                          source_confidence=ends[0][1],
+                          target_confidence=ends[1][1]))
 
 
 def attach_edge_labels(edges, leftover_runs):
@@ -325,7 +414,9 @@ def attach_edge_labels(edges, leftover_runs):
 def reconstruct_universal(svg_path):
     els, canvas = load(svg_path)
     classify(els, canvas)
-    associate_arrowheads(els)
+    associate_arrowheads(els)        # attach the closed-triangle heads first
+    detect_endpoint_heads(els)       # then find ER-style heads (skips working arrows)
+    associate_arrowheads(els)        # attach the newly found heads
     filter_decorations(els)
     shapes = [e for e in els if e.role == "shape"]
     leaves, containers = assign_containment(shapes)
@@ -340,6 +431,46 @@ def reconstruct_universal(svg_path):
 
 def _label(s):
     return (s.text or "(no text)")[:28]
+
+
+def _box_area(b):
+    return (b[2] - b[0]) * (b[3] - b[1])
+
+
+def build_tree(svg_path):
+    """Lossless companion to reconstruct_universal.
+
+    Returns EVERY box-shape (leaf AND container) with its containment links and
+    EVERY text run attached to its smallest containing box. Nothing is dropped:
+    the flat graph keeps one node per table for clean relationships, while this
+    tree retains the full structure (rows, columns, types, keys) so an agent can
+    drill into a node and read its contents.
+
+    Each returned box carries: .parent, .is_container (from assign_containment)
+    and .runs (the text runs whose smallest containing box is this box).
+    """
+    els, canvas = load(svg_path)
+    classify(els, canvas)
+    associate_arrowheads(els)
+    detect_endpoint_heads(els)
+    associate_arrowheads(els)
+    filter_decorations(els)
+    boxes = [e for e in els if e.role == "shape"]
+    assign_containment(boxes)               # sets .parent, .is_container
+
+    for b in boxes:
+        b.runs = []
+    for r in load_text(svg_path):
+        host, host_area = None, None
+        for b in boxes:
+            bb = b.bbox
+            if bb[0] <= r.anchor[0] <= bb[2] and bb[1] <= r.anchor[1] <= bb[3]:
+                a = _box_area(bb)
+                if host is None or a < host_area:
+                    host, host_area = b, a
+        if host is not None:
+            host.runs.append(r)
+    return boxes
 
 
 if __name__ == "__main__":

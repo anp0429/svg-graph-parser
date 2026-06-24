@@ -6,7 +6,7 @@ LineHead* markup is the oracle (used only to source the test, never by the parse
 import pathlib
 from svg_graph_parser.scene.scene_graph import SceneGraph
 
-WIKI = pathlib.Path(__file__).parent.parent.parent / "wiki_samples"
+WIKI = pathlib.Path(__file__).parent.parent / "samples"
 
 
 def _maybe(name):
@@ -15,7 +15,7 @@ def _maybe(name):
 
 
 def test_erd_crowsfoot_heads_become_directed_edges():
-    f = _maybe("miro_erd.svg")
+    f = _maybe("miro_connectors.svg")
     if f is None:
         import pytest; pytest.skip("miro_erd sample not present")
     g = SceneGraph.from_svg(str(f))

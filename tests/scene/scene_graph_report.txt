@@ -31,135 +31,6 @@ SUMMARY  nodes=6  edges=5  directed=5  undirected=0
   REACHABILITY  Lamp doesn't wor ... Plug in lamp: Lamp doesn't w -> Lamp plugged i -> Plug in lamp
 
 ==============================================================================
-FILE: Miro1.svg
-SUMMARY  nodes=96  edges=45  directed=45  undirected=0
-
-  NODES (96):
-    n0    Arrows & Connectors                       {fill=transparent}
-    n1    A visual reference of connector styles,   {fill=transparent}
-    n2    Basic types                               {fill=transparent}
-    n3    Patterns                                  {fill=transparent}
-    n4    Strokes, weights, dashes, heads.          {fill=transparent}
-    n5    How many things connect to how many.      {fill=transparent}
-    n6    (no text)                                 {fill=#36352f}
-    n7    (no text)                                 {fill=#36352f}
-    n8    (no text)                                 {fill=#36352f}
-    n9    (no text)                                 {fill=#36352f}
-    n10   (no text)                                 {fill=#36352f}
-    n11   (no text)                                 {fill=#36352f}
-    n12   (no text)                                 {fill=#36352f}
-    n13   (no text)                                 {fill=#fff6b6}
-    n14   (no text)                                 {fill=#fff6b6}
-    n15   (no text)                                 {fill=#36352f}
-    n16   Straight                                  {fill=transparent}
-    n17   Curved                                    {fill=transparent}
-    n18   Elbow                                     {fill=transparent}
-    n19   Dotted                                    {fill=transparent}
-    n20   (no text)                                 {fill=#36352f}
-    n21   One-​to-​one                              {fill=transparent}
-    n22   One-​to-​many                             {fill=transparent}
-    n23   Many-​to-​one                             {fill=transparent}
-    n24   (no text)                                 {fill=#36352f}
-    n25   (no text)                                 {fill=#36352f}
-    n26   (no text)                                 {fill=#36352f}
-    n27   (no text)                                 {fill=#36352f}
-    n28   (no text)                                 {fill=#36352f}
-    n29   (no text)                                 {fill=#36352f}
-    n30   (no text)                                 {fill=#36352f}
-    n31   (no text)                                 {fill=#36352f}
-    n32   Dashed                                    {fill=transparent}
-    n33   Thick                                     {fill=transparent}
-    n34   Thin                                      {fill=transparent}
-    n35   Double-​headed                            {fill=transparent}
-    n36   (no text)                                 {fill=#fff6b6}
-    n37   (no text)                                 {fill=#36352f}
-    n38   (no text)                                 {fill=#36352f}
-    n39   (no text)                                 {fill=#36352f}
-    ... (+56 more)
-
-  CONNECTION (neighbors):
-    How many things connect  -- n14
-    n6                       -- n13
-    n7                       -- Straight
-    n8                       -- Curved
-    n9                       -- Elbow
-    n10                      -- Dotted
-    n11                      -- n12
-    n12                      -- n11
-    n13                      -- n15, n20, n6
-    n14                      -- Many-​to-​one, How many things co
-    n15                      -- n13
-    Straight                 -- n7
-    Curved                   -- n8
-    Elbow                    -- n9
-    Dotted                   -- n10
-    n20                      -- n13
-    Many-​to-​one            -- n14
-    n24                      -- Dashed
-    n25                      -- Thick
-    n26                      -- n27
-    n27                      -- n26
-    n28                      -- n36
-    n29                      -- n36
-    n30                      -- n31, n37, n38
-    n31                      -- n30, n37, n38
-    ...
-
-  DIRECTED (45):
-    Straight                 -> n7
-    Curved                   -> n8
-    Elbow                    -> n9
-    Dotted                   -> n10
-    n11                      -> n12
-    Dashed                   -> n24
-    Thick                    -> n25
-    n26                      -> n27
-    n13                      -> n6
-    n13                      -> n15
-    n13                      -> n20
-    How many things connect  -> n14
-    Many-​to-​one            -> n14
-    n30                      -> n31
-    n30                      -> n37
-    n30                      -> n38
-    n31                      -> n37
-    n31                      -> n38
-    n37                      -> n38
-    n36                      -> n28
-    n36                      -> n29
-    n36                      -> n39
-    n36                      -> n40
-    n61                      -> n70
-    n62                      -> n71
-    n63                      -> n64
-    n65                      -> n66
-    n79                      -> n80
-    n80                      -> n79
-    n77                      -> n90
-    ... (+15 more)
-    roots (sources): How many things co, n11, n13, Straight, Curved, Elbow, Dotted, Many-​to-​one, n26, n30
-    sinks (terminals): n6, n7, n8, n9, n10, n12, n14, n15, n20, n24
-
-  VISUAL-ENCODING (edges by style): dashed=8, solid=37
-
-  CONTAINMENT (node inside container):
-    CUSTOMER                  <  (unlabelled container)
-    STUDENT_COURSE_ENROLLMEN  <  (unlabelled container)
-    PERSON                    <  (unlabelled container)
-    DEPARTMENT                <  (unlabelled container)
-    MANAGER                   <  (unlabelled container)
-    AUTHOR                    <  (unlabelled container)
-    TEACHER                   <  (unlabelled container)
-    ACTOR                     <  (unlabelled container)
-    PASSPORT                  <  (unlabelled container)
-    EMPLOYEE                  <  (unlabelled container)
-    ORDER                     <  (unlabelled container)
-    BOOK                      <  (unlabelled container)
-    STUDENT                   <  (unlabelled container)
-    MOVIE                     <  (unlabelled container)
-    DESK_ASSIGNMENT           <  (unlabelled container)
-
-==============================================================================
 FILE: ai_playground.svg
 SUMMARY  nodes=182  edges=5  directed=3  undirected=2
 
@@ -450,6 +321,135 @@ SUMMARY  nodes=6  edges=5  directed=5  undirected=0
     sinks (terminals): Plug in lamp, Replace bulb, Repair lamp
 
   REACHABILITY  Lamp doesn't wor ... Plug in lamp: Lamp doesn't w -> Lamp plugged i -> Plug in lamp
+
+==============================================================================
+FILE: miro_connectors.svg
+SUMMARY  nodes=96  edges=45  directed=45  undirected=0
+
+  NODES (96):
+    n0    Arrows & Connectors                       {fill=transparent}
+    n1    A visual reference of connector styles,   {fill=transparent}
+    n2    Basic types                               {fill=transparent}
+    n3    Patterns                                  {fill=transparent}
+    n4    Strokes, weights, dashes, heads.          {fill=transparent}
+    n5    How many things connect to how many.      {fill=transparent}
+    n6    (no text)                                 {fill=#36352f}
+    n7    (no text)                                 {fill=#36352f}
+    n8    (no text)                                 {fill=#36352f}
+    n9    (no text)                                 {fill=#36352f}
+    n10   (no text)                                 {fill=#36352f}
+    n11   (no text)                                 {fill=#36352f}
+    n12   (no text)                                 {fill=#36352f}
+    n13   (no text)                                 {fill=#fff6b6}
+    n14   (no text)                                 {fill=#fff6b6}
+    n15   (no text)                                 {fill=#36352f}
+    n16   Straight                                  {fill=transparent}
+    n17   Curved                                    {fill=transparent}
+    n18   Elbow                                     {fill=transparent}
+    n19   Dotted                                    {fill=transparent}
+    n20   (no text)                                 {fill=#36352f}
+    n21   One-​to-​one                              {fill=transparent}
+    n22   One-​to-​many                             {fill=transparent}
+    n23   Many-​to-​one                             {fill=transparent}
+    n24   (no text)                                 {fill=#36352f}
+    n25   (no text)                                 {fill=#36352f}
+    n26   (no text)                                 {fill=#36352f}
+    n27   (no text)                                 {fill=#36352f}
+    n28   (no text)                                 {fill=#36352f}
+    n29   (no text)                                 {fill=#36352f}
+    n30   (no text)                                 {fill=#36352f}
+    n31   (no text)                                 {fill=#36352f}
+    n32   Dashed                                    {fill=transparent}
+    n33   Thick                                     {fill=transparent}
+    n34   Thin                                      {fill=transparent}
+    n35   Double-​headed                            {fill=transparent}
+    n36   (no text)                                 {fill=#fff6b6}
+    n37   (no text)                                 {fill=#36352f}
+    n38   (no text)                                 {fill=#36352f}
+    n39   (no text)                                 {fill=#36352f}
+    ... (+56 more)
+
+  CONNECTION (neighbors):
+    How many things connect  -- n14
+    n6                       -- n13
+    n7                       -- Straight
+    n8                       -- Curved
+    n9                       -- Elbow
+    n10                      -- Dotted
+    n11                      -- n12
+    n12                      -- n11
+    n13                      -- n15, n20, n6
+    n14                      -- Many-​to-​one, How many things co
+    n15                      -- n13
+    Straight                 -- n7
+    Curved                   -- n8
+    Elbow                    -- n9
+    Dotted                   -- n10
+    n20                      -- n13
+    Many-​to-​one            -- n14
+    n24                      -- Dashed
+    n25                      -- Thick
+    n26                      -- n27
+    n27                      -- n26
+    n28                      -- n36
+    n29                      -- n36
+    n30                      -- n31, n37, n38
+    n31                      -- n30, n37, n38
+    ...
+
+  DIRECTED (45):
+    Straight                 -> n7
+    Curved                   -> n8
+    Elbow                    -> n9
+    Dotted                   -> n10
+    n11                      -> n12
+    Dashed                   -> n24
+    Thick                    -> n25
+    n26                      -> n27
+    n13                      -> n6
+    n13                      -> n15
+    n13                      -> n20
+    How many things connect  -> n14
+    Many-​to-​one            -> n14
+    n30                      -> n31
+    n30                      -> n37
+    n30                      -> n38
+    n31                      -> n37
+    n31                      -> n38
+    n37                      -> n38
+    n36                      -> n28
+    n36                      -> n29
+    n36                      -> n39
+    n36                      -> n40
+    n61                      -> n70
+    n62                      -> n71
+    n63                      -> n64
+    n65                      -> n66
+    n79                      -> n80
+    n80                      -> n79
+    n77                      -> n90
+    ... (+15 more)
+    roots (sources): How many things co, n11, n13, Straight, Curved, Elbow, Dotted, Many-​to-​one, n26, n30
+    sinks (terminals): n6, n7, n8, n9, n10, n12, n14, n15, n20, n24
+
+  VISUAL-ENCODING (edges by style): dashed=8, solid=37
+
+  CONTAINMENT (node inside container):
+    CUSTOMER                  <  (unlabelled container)
+    STUDENT_COURSE_ENROLLMEN  <  (unlabelled container)
+    PERSON                    <  (unlabelled container)
+    DEPARTMENT                <  (unlabelled container)
+    MANAGER                   <  (unlabelled container)
+    AUTHOR                    <  (unlabelled container)
+    TEACHER                   <  (unlabelled container)
+    ACTOR                     <  (unlabelled container)
+    PASSPORT                  <  (unlabelled container)
+    EMPLOYEE                  <  (unlabelled container)
+    ORDER                     <  (unlabelled container)
+    BOOK                      <  (unlabelled container)
+    STUDENT                   <  (unlabelled container)
+    MOVIE                     <  (unlabelled container)
+    DESK_ASSIGNMENT           <  (unlabelled container)
 
 ==============================================================================
 FILE: triangle.drawio.svg

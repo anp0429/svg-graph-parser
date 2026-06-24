@@ -80,14 +80,11 @@ def test_stable_root_under_rebuild():
 
 
 # ---- lossless tree + grouped-node tests (ER export) -----------------------
-ERD = Path(__file__).resolve().parents[1] / "samples" / "miro_erd.svg"
+ERD = Path(__file__).resolve().parents[1] / "samples" / "miro1.svg"
 
 
 def _erd():
-    import pytest
-    if not ERD.exists():
-        pytest.skip("miro_erd sample not present")
-    return SceneGraph.from_svg(str(ERD))
+    return _dense()
 
 
 def test_grouped_table_is_single_node_with_columns():

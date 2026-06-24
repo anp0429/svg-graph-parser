@@ -6,7 +6,7 @@ would see, WITHOUT running the model. No inference, no completion cost.
 
 Setup:  export ANTHROPIC_API_KEY=sk-...
         pip install anthropic
-Run:    python -m examples.count_tokens tests/samples/miro_erd.svg
+Run:    python -m examples.count_tokens tests/samples/miro1.svg
         python -m examples.count_tokens tests/samples/ai_playground.svg
 
 Model matters: the Opus 4.7+ tokenizer counts ~30% higher than older models for
@@ -52,7 +52,7 @@ def count(client, text):
 def main():
     if not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("set ANTHROPIC_API_KEY first")
-    path = sys.argv[1] if len(sys.argv) > 1 else "tests/samples/miro_erd.svg"
+    path = sys.argv[1] if len(sys.argv) > 1 else "tests/samples/miro1.svg"
     raw = open(path).read()
     sg = scene_graph_text(SceneGraph.from_svg(path))
 

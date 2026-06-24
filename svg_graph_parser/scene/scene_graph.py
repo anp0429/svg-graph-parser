@@ -154,6 +154,13 @@ class SceneGraph:
             runs = subtree_runs(ent)
             node.content = _structured_rows(runs)
             node.content_text = " ".join(r.text for r in runs)
+            # The parser does not guess which text is "the title" -- it groups the
+            # box and keeps every run in spatial order (node.content), leaving the
+            # AI to read title/columns/types from that. As a convenience for
+            # addressing, if the flat pass found no label, point it at the group's
+            # first (top) row; node_content still exposes the whole group.
+            if not node.label and node.content and node.content[0]:
+                node.label = " ".join(node.content[0])
 
         self._redirect_edges_to_entity_reps(node_entity)
 

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__svg-graph__edges_by_style",
+      "mcp__svg-graph__successors"
+    ]
+  }
+}

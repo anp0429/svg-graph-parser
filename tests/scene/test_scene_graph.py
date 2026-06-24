@@ -131,9 +131,29 @@ def test_dense_board_connector_rolls_up_to_table():
     assert "CUSTOMER" in [g.label(s) for s in g.predecessors(ids["ORDER"])]
 
 
-def test_dense_board_dashed_set_complete():
-    """The dashed ER relationships must include STUDENT->COURSE, which the old
-    leaf-only matching dropped on this board."""
+def test_dense_board_all_nine_relationships_resolve():
+    """Every ER relationship on the dense board resolves to a table->table edge,
+    including EMPLOYEE->DESK_ASSIGNMENT (whose table titles the flat pass missed
+    and which are recovered from the group's content)."""
+    g = _dense()
+    labels = {n.label for n in g.nodes.values()}
+    assert "DESK_ASSIGNMENT" in labels
+    assert "STUDENT_COURSE_ENROLLMENT" in labels
+    ent = {"PERSON", "PASSPORT", "EMPLOYEE", "DESK_ASSIGNMENT", "CUSTOMER", "ORDER",
+           "DEPARTMENT", "AUTHOR", "BOOK", "TEACHER", "STUDENT", "COURSE", "ACTOR",
+           "MOVIE", "MANAGER"}
+    er = {(g.label(e.source), g.label(e.target))
+          for e in g.edges
+          if g.label(e.source) in ent and g.label(e.target) in ent}
+    expected = {("PERSON", "PASSPORT"), ("DEPARTMENT", "EMPLOYEE"),
+                ("CUSTOMER", "ORDER"), ("EMPLOYEE", "DESK_ASSIGNMENT"),
+                ("AUTHOR", "BOOK"), ("TEACHER", "STUDENT"), ("STUDENT", "COURSE"),
+                ("ACTOR", "MOVIE"), ("MANAGER", "EMPLOYEE")}
+    assert expected <= er, f"missing: {expected - er}"
+
+
+def test_dense_board_dashed_relationships_complete():
+    """Dashed ER relationships are all recovered, including STUDENT->COURSE."""
     g = _dense()
     ent = {"AUTHOR", "BOOK", "TEACHER", "STUDENT", "COURSE", "ACTOR", "MOVIE",
            "MANAGER", "EMPLOYEE"}

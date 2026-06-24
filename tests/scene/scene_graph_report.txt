@@ -31,102 +31,16 @@ SUMMARY  nodes=6  edges=5  directed=5  undirected=0
   REACHABILITY  Lamp doesn't wor ... Plug in lamp: Lamp doesn't w -> Lamp plugged i -> Plug in lamp
 
 ==============================================================================
-FILE: AI Playground (1).svg
-SUMMARY  nodes=182  edges=5  directed=3  undirected=2
-
-  NODES (182):
-    n0    Getting started: how to build a product   {fill=transparent}
-    n1    Brainstorm PRODUCT ideas with a sidekick  {fill=#ffffff}
-    n2    (no text)                                 {fill=#FFFFFF}
-    n3    (no text)                               
-    n4    (no text)                                 {fill=#FFFFFF}
-    n5    (no text)                               
-    n6    (no text)                                 {fill=#FFFFFF}
-    n7    (no text)                               
-    n8    (no text)                                 {fill=transparent}
-    n9    (no text)                                 {fill=transparent}
-    n10   1                                         {fill=#1c1c1e}
-    n11   (no text)                                 {fill=transparent}
-    n12   (no text)                                 {fill=transparent}
-    n13   3                                         {fill=#1c1c1e}
-    n14   Run the flow to make it real!             {fill=#ffffff}
-    n15   2                                         {fill=#1c1c1e}
-    n16   Hit run, and watch your idea              {fill=transparent}
-    n17   (no text)                                 {fill=transparent}
-    n18   Pick your favorite PRODUCT IDEA           {fill=#ffffff}
-    n19   (no text)                                 {fill=transparent}
-    n20   (no text)                                 {fill=transparent}
-    n21   (no text)                                 {fill=transparent}
-    n22   From the brainstormed ideas,              {fill=transparent}
-    n23   (no text)                                 {fill=#ffffff}
-    n24   EnergyEye - Home sensor that monitors el
-    n25   reduce consumption, predicts bills, and   {fill=#000}
-    n26   Add your idea here                        {fill=transparent}
-    n27   Social element for roommates and partner
-    n28   Integrations with smart devices         
-    n29   (no text)                                 {fill=#ffffff}
-    n30   WasteWise - Smart kitchen bin that scans
-    n31   Ideas                                   
-    n32   to try                                    {fill=#000}
-    n33   PetPulse - Collar attachment that monito
-    n34   provides behavioral insights, and connec  {fill=#000}
-    n35   SleepSync - Bedside device that analyzes
-    n36   CookCoach - Kitchen scale that identifie
-    n37   available ingredients, dietary restricti  {fill=#000}
-    n38   FitFloor - Pressure-​ sensitive floor ma
-    n39   HydroTrack - Water bottle with embedded 
-    ... (+142 more)
-
-  CONNECTION (neighbors):
-    n2                       -- n9
-    n9                       -- n2
-    1                        -- 2
-    3                        -- 2
-    2                        -- 1, 3
-    n21                      -- n23
-    n23                      -- n21
-    MEET More sidekicks      -- Chat with Sidekick
-    Chat with Sidekicks and  -- MEET More sidekick
-
-  DIRECTED (3):
-    n21                      -> n23
-    n9                       -> n2
-    Chat with Sidekicks and  -> MEET More sidekicks
-    roots (sources): n9, n21, Chat with Sidekick
-    sinks (terminals): n2, n23, MEET More sidekick
-
-  VISUAL-ENCODING (edges by style): dashed=2, solid=3
-
-  CONTAINMENT (node inside container):
-    n2                        <  (unlabelled container)
-    n3                        <  (unlabelled container)
-    n4                        <  (unlabelled container)
-    n5                        <  (unlabelled container)
-    n6                        <  (unlabelled container)
-    n7                        <  (unlabelled container)
-    n8                        <  (unlabelled container)
-    n9                        <  (unlabelled container)
-    n12                       <  (unlabelled container)
-    Hit run, and watch your   <  (unlabelled container)
-    n17                       <  (unlabelled container)
-    n19                       <  (unlabelled container)
-    n20                       <  (unlabelled container)
-    n21                       <  (unlabelled container)
-    Add your idea here        <  (unlabelled container)
-
-  REACHABILITY  n9 ... n2: n9 -> n2
-
-==============================================================================
 FILE: Miro1.svg
-SUMMARY  nodes=96  edges=42  directed=42  undirected=0
+SUMMARY  nodes=96  edges=45  directed=45  undirected=0
 
   NODES (96):
     n0    Arrows & Connectors                       {fill=transparent}
-    n1    (no text)                                 {fill=transparent}
-    n2    (no text)                                 {fill=transparent}
-    n3    (no text)                                 {fill=transparent}
-    n4    (no text)                                 {fill=transparent}
-    n5    (no text)                                 {fill=transparent}
+    n1    A visual reference of connector styles,   {fill=transparent}
+    n2    Basic types                               {fill=transparent}
+    n3    Patterns                                  {fill=transparent}
+    n4    Strokes, weights, dashes, heads.          {fill=transparent}
+    n5    How many things connect to how many.      {fill=transparent}
     n6    (no text)                                 {fill=#36352f}
     n7    (no text)                                 {fill=#36352f}
     n8    (no text)                                 {fill=#36352f}
@@ -164,7 +78,7 @@ SUMMARY  nodes=96  edges=42  directed=42  undirected=0
     ... (+56 more)
 
   CONNECTION (neighbors):
-    n5                       -- n14
+    How many things connect  -- n14
     n6                       -- n13
     n7                       -- Straight
     n8                       -- Curved
@@ -173,7 +87,7 @@ SUMMARY  nodes=96  edges=42  directed=42  undirected=0
     n11                      -- n12
     n12                      -- n11
     n13                      -- n15, n20, n6
-    n14                      -- Many-​to-​one, n5
+    n14                      -- Many-​to-​one, How many things co
     n15                      -- n13
     Straight                 -- n7
     Curved                   -- n8
@@ -191,7 +105,7 @@ SUMMARY  nodes=96  edges=42  directed=42  undirected=0
     n31                      -- n30, n37, n38
     ...
 
-  DIRECTED (42):
+  DIRECTED (45):
     Straight                 -> n7
     Curved                   -> n8
     Elbow                    -> n9
@@ -203,7 +117,7 @@ SUMMARY  nodes=96  edges=42  directed=42  undirected=0
     n13                      -> n6
     n13                      -> n15
     n13                      -> n20
-    n5                       -> n14
+    How many things connect  -> n14
     Many-​to-​one            -> n14
     n30                      -> n31
     n30                      -> n37
@@ -222,15 +136,15 @@ SUMMARY  nodes=96  edges=42  directed=42  undirected=0
     n79                      -> n80
     n80                      -> n79
     n77                      -> n90
-    ... (+12 more)
-    roots (sources): n5, n11, n13, Straight, Curved, Elbow, Dotted, Many-​to-​one, n26, n30
+    ... (+15 more)
+    roots (sources): How many things co, n11, n13, Straight, Curved, Elbow, Dotted, Many-​to-​one, n26, n30
     sinks (terminals): n6, n7, n8, n9, n10, n12, n14, n15, n20, n24
 
-  VISUAL-ENCODING (edges by style): dashed=7, solid=35
+  VISUAL-ENCODING (edges by style): dashed=8, solid=37
 
   CONTAINMENT (node inside container):
     CUSTOMER                  <  (unlabelled container)
-    n44                       <  (unlabelled container)
+    STUDENT_COURSE_ENROLLMEN  <  (unlabelled container)
     PERSON                    <  (unlabelled container)
     DEPARTMENT                <  (unlabelled container)
     MANAGER                   <  (unlabelled container)
@@ -243,109 +157,93 @@ SUMMARY  nodes=96  edges=42  directed=42  undirected=0
     BOOK                      <  (unlabelled container)
     STUDENT                   <  (unlabelled container)
     MOVIE                     <  (unlabelled container)
-    n57                       <  (unlabelled container)
+    DESK_ASSIGNMENT           <  (unlabelled container)
 
 ==============================================================================
-FILE: Restored Planet-DiscoveryFlow.svg
-SUMMARY  nodes=374  edges=41  directed=4  undirected=37
+FILE: ai_playground.svg
+SUMMARY  nodes=182  edges=5  directed=3  undirected=2
 
-  NODES (374):
-    n0    Ian Golding                               {fill=#ffffff}
-    n1    Tadhg O' Sullivan                         {fill=#ffffff}
-    n2    Adam Smith                                {fill=#ffffff}
-    n3    Rory                                      {fill=#ffffff}
-    n4    Belma                                     {fill=#ffffff}
-    n5    Jurriaan                                  {fill=#ffffff}
-    n6    Based on                                  {fill=transparent}
-    n7    T- Shirt                                  {fill=transparent}
-    n8    (no text)                                 {fill=transparent}
-    n9    Sizing                                    {fill=transparent}
-    n10   PM(O) Ideation Go Live                    {fill=transparent}
-    n11   WorkDay Code Created                      {fill=#90cdff}
-    n12   Review by                                 {fill=#90cdff}
-    n13   PM(O) Project Budgetting Go Live          {fill=transparent}
-    n14   Change Request Process (w/ approvals)     {fill=transparent}
-    n15   Proje ct Based                            {fill=#fff9b1}
-    n16   ReApproval                                {fill=#90cdff}
-    n17   Project Code / WorkDay Code               {fill=transparent}
-    n18   Budgetary amounts are captured during in  {fill=transparent}
-    n19   view by Vertical and/or PM                {fill=transparent}
-    n20   Time Tracking Go Live                     {fill=#90cdff}
-    n21   >110% of TShiort Size                     {fill=transparent}
-    n22   (no text)                               
-    n23   Capacity Management Go Live               {fill=transparent}
-    n24   PM(O) Go Live for Project Management      {fill=#c5ffc4}
-    n25   Areas                                     {fill=transparent}
-    n26   Not Started / To Do                       {fill=transparent}
-    n27   Shirt Size)                               {fill=transparent}
-    n28   (no text)                                 {fill=transparent}
-    n29   (intake form)                             {fill=transparent}
-    n30   In Progress                               {fill=#fbf5a3}
-    n31   Done                                      {fill=transparent}
-    n32   Budget                                    {fill=transparent}
-    n33   People Organizational Structure           {fill=transparent}
-    n34   Com pare                                  {fill=#fff9b1}
-    n35   Initial Users Import (.csv)               {fill=transparent}
-    n36   Fin. Year == Calendar Year                {fill=#fff9b1}
-    n37   Project                                   {fill=#90cdff}
-    n38   Project Portfolio Management              {fill=#ffffff}
-    n39   Time Tracking Discovery                   {fill=#90cdff}
-    ... (+334 more)
+  NODES (182):
+    n0    Getting started: how to build a product   {fill=transparent}
+    n1    Brainstorm PRODUCT ideas with a sidekick  {fill=#ffffff}
+    n2    Brainstorm with a Sidekick                {fill=#FFFFFF}
+    n3    Brainstorm with a Sidekick              
+    n4    Brainstorm with a Sidekick                {fill=#FFFFFF}
+    n5    Brainstorm with a Sidekick              
+    n6    Brainstorm with a Sidekick                {fill=#FFFFFF}
+    n7    Brainstorm with a Sidekick              
+    n8    Click the button to launch a              {fill=transparent}
+    n9    brainstorming Sidekick and start a        {fill=transparent}
+    n10   1                                         {fill=#1c1c1e}
+    n11   chat. You can work with the Sidekick      {fill=transparent}
+    n12   to brainstorm ideas!                      {fill=transparent}
+    n13   3                                         {fill=#1c1c1e}
+    n14   Run the flow to make it real!             {fill=#ffffff}
+    n15   2                                         {fill=#1c1c1e}
+    n16   Hit run, and watch your idea              {fill=transparent}
+    n17   (no text)                                 {fill=transparent}
+    n18   Pick your favorite PRODUCT IDEA           {fill=#ffffff}
+    n19   transform into a complete                 {fill=transparent}
+    n20   concept: creative brief, visual           {fill=transparent}
+    n21   mockup, and working prototype.            {fill=transparent}
+    n22   From the brainstormed ideas,              {fill=transparent}
+    n23   (no text)                                 {fill=#ffffff}
+    n24   EnergyEye - Home sensor that monitors el
+    n25   reduce consumption, predicts bills, and   {fill=#000}
+    n26   Add your idea here                        {fill=transparent}
+    n27   Social element for roommates and partner
+    n28   Integrations with smart devices         
+    n29   (no text)                                 {fill=#ffffff}
+    n30   WasteWise - Smart kitchen bin that scans
+    n31   Ideas                                   
+    n32   to try                                    {fill=#000}
+    n33   PetPulse - Collar attachment that monito
+    n34   provides behavioral insights, and connec  {fill=#000}
+    n35   SleepSync - Bedside device that analyzes
+    n36   CookCoach - Kitchen scale that identifie
+    n37   available ingredients, dietary restricti  {fill=#000}
+    n38   FitFloor - Pressure-​ sensitive floor ma
+    n39   HydroTrack - Water bottle with embedded 
+    ... (+142 more)
 
   CONNECTION (neighbors):
-    WorkDay Code Created     -- Shirt Size)
-    >110% of TShiort Size    -- n28
-    PM(O) Go Live for Projec -- Areas
-    Areas                    -- PM(O) Go Live for 
-    Shirt Size)              -- WorkDay Code Creat, n28
-    n28                      -- >110% of TShiort S, Shirt Size)
-    Budget                   -- Project
-    Project                  -- Budget
-    PP Project Setup Initial -- Ideation Setup
-    Ideation Setup           -- PP Project Setup I
-    WorkDay Integration HR   -- Finance, n69, n70
-    Finance                  -- WorkDay Integratio
-    n69                      -- WorkDay Integratio
-    n70                      -- WorkDay Integratio
-    n95                      -- Initiative/project
-    Initiative/project       -- n95
-    n126                     -- Rate
-    creates                  -- Cost Center
-    Cost Center              -- creates
-    n155                     -- n206
-    n162                     -- n206
-    n165                     -- Rate
-    n181                     -- n182
-    n182                     -- n181, n187, n189, n192, n194, n199, n203
-    n185                     -- Impacted
-    ...
+    Brainstorm with a Sideki -- brainstorming Side
+    brainstorming Sidekick a -- Brainstorm with a 
+    1                        -- 2
+    3                        -- 2
+    2                        -- 1, 3
+    mockup, and working prot -- n23
+    n23                      -- mockup, and workin
+    MEET More sidekicks      -- Chat with Sidekick
+    Chat with Sidekicks and  -- MEET More sidekick
 
-  DIRECTED (4):
-    n182                     -> n181
-    n181                     -> n182
-    n203                     -> n182
-    n162                     -> n206
-    roots (sources): n162, n203
-    sinks (terminals): n206
+  DIRECTED (3):
+    mockup, and working prot -> n23
+    brainstorming Sidekick a -> Brainstorm with a Sideki
+    Chat with Sidekicks and  -> MEET More sidekicks
+    roots (sources): brainstorming Side, mockup, and workin, Chat with Sidekick
+    sinks (terminals): Brainstorm with a , n23, MEET More sidekick
+
+  VISUAL-ENCODING (edges by style): dashed=2, solid=3
 
   CONTAINMENT (node inside container):
-    Based on                  <  (unlabelled container)
-    T- Shirt                  <  (unlabelled container)
-    n8                        <  (unlabelled container)
-    Sizing                    <  (unlabelled container)
-    WorkDay Code Created      <  (unlabelled container)
-    Review by                 <  (unlabelled container)
-    Change Request Process (  <  (unlabelled container)
-    Proje ct Based            <  (unlabelled container)
-    ReApproval                <  (unlabelled container)
-    Project Code / WorkDay C  <  (unlabelled container)
-    Budgetary amounts are ca  <  (unlabelled container)
-    view by Vertical and/or   <  (unlabelled container)
-    >110% of TShiort Size     <  (unlabelled container)
-    Not Started / To Do       <  (unlabelled container)
-    Shirt Size)               <  (unlabelled container)
+    Brainstorm with a Sideki  <  (unlabelled container)
+    Brainstorm with a Sideki  <  (unlabelled container)
+    Brainstorm with a Sideki  <  (unlabelled container)
+    Brainstorm with a Sideki  <  (unlabelled container)
+    Brainstorm with a Sideki  <  (unlabelled container)
+    Brainstorm with a Sideki  <  (unlabelled container)
+    Click the button to laun  <  (unlabelled container)
+    brainstorming Sidekick a  <  (unlabelled container)
+    to brainstorm ideas!      <  (unlabelled container)
+    Hit run, and watch your   <  (unlabelled container)
+    n17                       <  (unlabelled container)
+    transform into a complet  <  (unlabelled container)
+    concept: creative brief,  <  (unlabelled container)
+    mockup, and working prot  <  (unlabelled container)
+    Add your idea here        <  (unlabelled container)
 
-  REACHABILITY  n162 ... n206: n162 -> n206
+  REACHABILITY  brainstorming Si ... Brainstorm with : brainstorming  -> Brainstorm wit
 
 ==============================================================================
 FILE: block_diagram.svg
@@ -485,42 +383,42 @@ SUMMARY  nodes=10  edges=10  directed=10  undirected=0
   NODES (10):
     n0    Start                                     {fill=#F0D0FF}
     n1    Integer currentNumber, currentSum, avera  {fill=#FFFFD0}
-    n2    (no text)                                 {fill=#FFFFD0}
+    n2    currentSum = 0                            {fill=#FFFFD0}
     n3    i = 1 to 5                                {fill=#FFE0A0}
-    n4    (no text)                                 {fill=#D0FFD0}
-    n5    (no text)                                 {fill=#D0E0FF}
-    n6    (no text)                                 {fill=#FFFFD0}
-    n7    (no text)                                 {fill=#FFFFD0}
-    n8    (no text)                                 {fill=#D0FFD0}
-    n9    (no text)                                 {fill=#F0D0FF}
+    n4    Output "Please enter a number..."         {fill=#D0FFD0}
+    n5    Input currentNumber                       {fill=#D0E0FF}
+    n6    currentSum = currentSum+ currentNumber    {fill=#FFFFD0}
+    n7    average = currentSum/5                    {fill=#FFFFD0}
+    n8    Output "Average is: " & average           {fill=#D0FFD0}
+    n9    End                                       {fill=#F0D0FF}
 
   CONNECTION (neighbors):
     Start                    -- Integer currentNum
-    Integer currentNumber, c -- Start, n2
-    n2                       -- Integer currentNum, i = 1 to 5
-    i = 1 to 5               -- n2, n4, n6, n7
-    n4                       -- i = 1 to 5, n5
-    n5                       -- n4, n6
-    n6                       -- i = 1 to 5, n5
-    n7                       -- i = 1 to 5, n8
-    n8                       -- n7, n9
-    n9                       -- n8
+    Integer currentNumber, c -- Start, currentSum = 0
+    currentSum = 0           -- Integer currentNum, i = 1 to 5
+    i = 1 to 5               -- currentSum = 0, Output "Please ent, currentSum = curre, average = currentS
+    Output "Please enter a n -- i = 1 to 5, Input currentNumbe
+    Input currentNumber      -- Output "Please ent, currentSum = curre
+    currentSum = currentSum+ -- i = 1 to 5, Input currentNumbe
+    average = currentSum/5   -- i = 1 to 5, Output "Average is
+    Output "Average is: " &  -- average = currentS, End
+    End                      -- Output "Average is
 
   DIRECTED (10):
     Start                    -> Integer currentNumber, c
-    n8                       -> n9
-    Integer currentNumber, c -> n2
-    n2                       -> i = 1 to 5
-    i = 1 to 5               -> n7
-    n7                       -> n8
-    i = 1 to 5               -> n4
-    n6                       -> i = 1 to 5
-    n4                       -> n5
-    n5                       -> n6
+    Output "Average is: " &  -> End
+    Integer currentNumber, c -> currentSum = 0
+    currentSum = 0           -> i = 1 to 5
+    i = 1 to 5               -> average = currentSum/5
+    average = currentSum/5   -> Output "Average is: " & 
+    i = 1 to 5               -> Output "Please enter a n
+    currentSum = currentSum+ -> i = 1 to 5
+    Output "Please enter a n -> Input currentNumber
+    Input currentNumber      -> currentSum = currentSum+
     roots (sources): Start
-    sinks (terminals): n9
+    sinks (terminals): End
 
-  REACHABILITY  Start ... n9: Start -> Integer curren -> n2 -> i = 1 to 5 -> n7 -> n8 -> n9
+  REACHABILITY  Start ... End: Start -> Integer curren -> currentSum = 0 -> i = 1 to 5 -> average = curr -> Output "Averag -> End
 
 ==============================================================================
 FILE: lamp_inkscape.svg
@@ -574,42 +472,42 @@ SUMMARY  nodes=10  edges=10  directed=10  undirected=0
   NODES (10):
     n0    Start                                     {fill=#F0D0FF}
     n1    Integer currentNumber, currentSum, avera  {fill=#FFFFD0}
-    n2    (no text)                                 {fill=#FFFFD0}
+    n2    currentSum = 0                            {fill=#FFFFD0}
     n3    i = 1 to 5                                {fill=#FFE0A0}
-    n4    (no text)                                 {fill=#D0FFD0}
-    n5    (no text)                                 {fill=#D0E0FF}
-    n6    (no text)                                 {fill=#FFFFD0}
-    n7    (no text)                                 {fill=#FFFFD0}
-    n8    (no text)                                 {fill=#D0FFD0}
-    n9    (no text)                                 {fill=#F0D0FF}
+    n4    Output "Please enter a number..."         {fill=#D0FFD0}
+    n5    Input currentNumber                       {fill=#D0E0FF}
+    n6    currentSum = currentSum+ currentNumber    {fill=#FFFFD0}
+    n7    average = currentSum/5                    {fill=#FFFFD0}
+    n8    Output "Average is: " & average           {fill=#D0FFD0}
+    n9    End                                       {fill=#F0D0FF}
 
   CONNECTION (neighbors):
     Start                    -- Integer currentNum
-    Integer currentNumber, c -- Start, n2
-    n2                       -- Integer currentNum, i = 1 to 5
-    i = 1 to 5               -- n2, n4, n6, n7
-    n4                       -- i = 1 to 5, n5
-    n5                       -- n4, n6
-    n6                       -- i = 1 to 5, n5
-    n7                       -- i = 1 to 5, n8
-    n8                       -- n7, n9
-    n9                       -- n8
+    Integer currentNumber, c -- Start, currentSum = 0
+    currentSum = 0           -- Integer currentNum, i = 1 to 5
+    i = 1 to 5               -- currentSum = 0, Output "Please ent, currentSum = curre, average = currentS
+    Output "Please enter a n -- i = 1 to 5, Input currentNumbe
+    Input currentNumber      -- Output "Please ent, currentSum = curre
+    currentSum = currentSum+ -- i = 1 to 5, Input currentNumbe
+    average = currentSum/5   -- i = 1 to 5, Output "Average is
+    Output "Average is: " &  -- average = currentS, End
+    End                      -- Output "Average is
 
   DIRECTED (10):
     Start                    -> Integer currentNumber, c
-    n8                       -> n9
-    Integer currentNumber, c -> n2
-    n2                       -> i = 1 to 5
-    i = 1 to 5               -> n7
-    n7                       -> n8
-    i = 1 to 5               -> n4
-    n6                       -> i = 1 to 5
-    n4                       -> n5
-    n5                       -> n6
+    Output "Average is: " &  -> End
+    Integer currentNumber, c -> currentSum = 0
+    currentSum = 0           -> i = 1 to 5
+    i = 1 to 5               -> average = currentSum/5
+    average = currentSum/5   -> Output "Average is: " & 
+    i = 1 to 5               -> Output "Please enter a n
+    currentSum = currentSum+ -> i = 1 to 5
+    Output "Please enter a n -> Input currentNumber
+    Input currentNumber      -> currentSum = currentSum+
     roots (sources): Start
-    sinks (terminals): n9
+    sinks (terminals): End
 
-  REACHABILITY  Start ... n9: Start -> Integer curren -> n2 -> i = 1 to 5 -> n7 -> n8 -> n9
+  REACHABILITY  Start ... End: Start -> Integer curren -> currentSum = 0 -> i = 1 to 5 -> average = curr -> Output "Averag -> End
 
 ==============================================================================
 FILE: 01._Average_of_5_Numbers__using_For_loop__-_Start.svg
@@ -618,42 +516,42 @@ SUMMARY  nodes=10  edges=10  directed=10  undirected=0
   NODES (10):
     n0    Start                                     {fill=#F0D0FF}
     n1    Integer currentNumber, currentSum, avera  {fill=#FFFFD0}
-    n2    (no text)                                 {fill=#FFFFD0}
+    n2    currentSum = 0                            {fill=#FFFFD0}
     n3    i = 1 to 5                                {fill=#FFE0A0}
-    n4    (no text)                                 {fill=#D0FFD0}
-    n5    (no text)                                 {fill=#D0E0FF}
-    n6    (no text)                                 {fill=#FFFFD0}
-    n7    (no text)                                 {fill=#FFFFD0}
-    n8    (no text)                                 {fill=#D0FFD0}
-    n9    (no text)                                 {fill=#F0D0FF}
+    n4    Output "Please enter a number..."         {fill=#D0FFD0}
+    n5    Input currentNumber                       {fill=#D0E0FF}
+    n6    currentSum = currentSum+ currentNumber    {fill=#FFFFD0}
+    n7    average = currentSum/5                    {fill=#FFFFD0}
+    n8    Output "Average is: " & average           {fill=#D0FFD0}
+    n9    End                                       {fill=#F0D0FF}
 
   CONNECTION (neighbors):
     Start                    -- Integer currentNum
-    Integer currentNumber, c -- Start, n2
-    n2                       -- Integer currentNum, i = 1 to 5
-    i = 1 to 5               -- n2, n4, n6, n7
-    n4                       -- i = 1 to 5, n5
-    n5                       -- n4, n6
-    n6                       -- i = 1 to 5, n5
-    n7                       -- i = 1 to 5, n8
-    n8                       -- n7, n9
-    n9                       -- n8
+    Integer currentNumber, c -- Start, currentSum = 0
+    currentSum = 0           -- Integer currentNum, i = 1 to 5
+    i = 1 to 5               -- currentSum = 0, Output "Please ent, currentSum = curre, average = currentS
+    Output "Please enter a n -- i = 1 to 5, Input currentNumbe
+    Input currentNumber      -- Output "Please ent, currentSum = curre
+    currentSum = currentSum+ -- i = 1 to 5, Input currentNumbe
+    average = currentSum/5   -- i = 1 to 5, Output "Average is
+    Output "Average is: " &  -- average = currentS, End
+    End                      -- Output "Average is
 
   DIRECTED (10):
     Start                    -> Integer currentNumber, c
-    n8                       -> n9
-    Integer currentNumber, c -> n2
-    n2                       -> i = 1 to 5
-    i = 1 to 5               -> n7
-    n7                       -> n8
-    i = 1 to 5               -> n4
-    n6                       -> i = 1 to 5
-    n4                       -> n5
-    n5                       -> n6
+    Output "Average is: " &  -> End
+    Integer currentNumber, c -> currentSum = 0
+    currentSum = 0           -> i = 1 to 5
+    i = 1 to 5               -> average = currentSum/5
+    average = currentSum/5   -> Output "Average is: " & 
+    i = 1 to 5               -> Output "Please enter a n
+    currentSum = currentSum+ -> i = 1 to 5
+    Output "Please enter a n -> Input currentNumber
+    Input currentNumber      -> currentSum = currentSum+
     roots (sources): Start
-    sinks (terminals): n9
+    sinks (terminals): End
 
-  REACHABILITY  Start ... n9: Start -> Integer curren -> n2 -> i = 1 to 5 -> n7 -> n8 -> n9
+  REACHABILITY  Start ... End: Start -> Integer curren -> currentSum = 0 -> i = 1 to 5 -> average = curr -> Output "Averag -> End
 
 ==============================================================================
 FILE: 02._Average_of_5_Numbers_(using_while_loop)_-_Start.svg
@@ -662,48 +560,48 @@ SUMMARY  nodes=12  edges=12  directed=12  undirected=0
   NODES (12):
     n0    Start                                     {fill=#F0D0FF}
     n1    Integer currentNumber, currentSum, avera  {fill=#FFFFD0}
-    n2    (no text)                                 {fill=#FFFFD0}
-    n3    (no text)                                 {fill=#FFFFD0}
+    n2    currentSum = 0                            {fill=#FFFFD0}
+    n3    i = 1                                     {fill=#FFFFD0}
     n4    i<=5                                      {fill=#FFE0A0}
-    n5    (no text)                                 {fill=#D0FFD0}
-    n6    (no text)                                 {fill=#D0E0FF}
-    n7    (no text)                                 {fill=#FFFFD0}
-    n8    (no text)                                 {fill=#FFFFD0}
-    n9    (no text)                                 {fill=#FFFFD0}
-    n10   (no text)                                 {fill=#D0FFD0}
-    n11   (no text)                                 {fill=#F0D0FF}
+    n5    Output "Please enter a number..."         {fill=#D0FFD0}
+    n6    Input currentNumber                       {fill=#D0E0FF}
+    n7    currentSum = currentSum+ currentNumber    {fill=#FFFFD0}
+    n8    i = i+1                                   {fill=#FFFFD0}
+    n9    average = currentSum/5                    {fill=#FFFFD0}
+    n10   Output "Average is: " & average           {fill=#D0FFD0}
+    n11   End                                       {fill=#F0D0FF}
 
   CONNECTION (neighbors):
     Start                    -- Integer currentNum
-    Integer currentNumber, c -- Start, n2
-    n2                       -- Integer currentNum, n3
-    n3                       -- n2, i<=5
-    i<=5                     -- n3, n5, n8, n9
-    n5                       -- i<=5, n6
-    n6                       -- n5, n7
-    n7                       -- n6, n8
-    n8                       -- i<=5, n7
-    n9                       -- n10, i<=5
-    n10                      -- n11, n9
-    n11                      -- n10
+    Integer currentNumber, c -- Start, currentSum = 0
+    currentSum = 0           -- Integer currentNum, i = 1
+    i = 1                    -- currentSum = 0, i<=5
+    i<=5                     -- i = 1, Output "Please ent, i = i+1, average = currentS
+    Output "Please enter a n -- i<=5, Input currentNumbe
+    Input currentNumber      -- Output "Please ent, currentSum = curre
+    currentSum = currentSum+ -- Input currentNumbe, i = i+1
+    i = i+1                  -- i<=5, currentSum = curre
+    average = currentSum/5   -- Output "Average is, i<=5
+    Output "Average is: " &  -- End, average = currentS
+    End                      -- Output "Average is
 
   DIRECTED (12):
     Start                    -> Integer currentNumber, c
-    n10                      -> n11
-    Integer currentNumber, c -> n2
-    n2                       -> n3
-    n3                       -> i<=5
-    i<=5                     -> n9
-    n9                       -> n10
-    i<=5                     -> n5
-    n8                       -> i<=5
-    n5                       -> n6
-    n6                       -> n7
-    n7                       -> n8
+    Output "Average is: " &  -> End
+    Integer currentNumber, c -> currentSum = 0
+    currentSum = 0           -> i = 1
+    i = 1                    -> i<=5
+    i<=5                     -> average = currentSum/5
+    average = currentSum/5   -> Output "Average is: " & 
+    i<=5                     -> Output "Please enter a n
+    i = i+1                  -> i<=5
+    Output "Please enter a n -> Input currentNumber
+    Input currentNumber      -> currentSum = currentSum+
+    currentSum = currentSum+ -> i = i+1
     roots (sources): Start
-    sinks (terminals): n11
+    sinks (terminals): End
 
-  REACHABILITY  Start ... n11: Start -> Integer curren -> n2 -> n3 -> i<=5 -> n9 -> n10 -> n11
+  REACHABILITY  Start ... End: Start -> Integer curren -> currentSum = 0 -> i = 1 -> i<=5 -> average = curr -> Output "Averag -> End
 
 ==============================================================================
 FILE: 02._Average_of_5_Numbers__using_while_loop__-_Start.svg
@@ -712,48 +610,48 @@ SUMMARY  nodes=12  edges=12  directed=12  undirected=0
   NODES (12):
     n0    Start                                     {fill=#F0D0FF}
     n1    Integer currentNumber, currentSum, avera  {fill=#FFFFD0}
-    n2    (no text)                                 {fill=#FFFFD0}
-    n3    (no text)                                 {fill=#FFFFD0}
+    n2    currentSum = 0                            {fill=#FFFFD0}
+    n3    i = 1                                     {fill=#FFFFD0}
     n4    i<=5                                      {fill=#FFE0A0}
-    n5    (no text)                                 {fill=#D0FFD0}
-    n6    (no text)                                 {fill=#D0E0FF}
-    n7    (no text)                                 {fill=#FFFFD0}
-    n8    (no text)                                 {fill=#FFFFD0}
-    n9    (no text)                                 {fill=#FFFFD0}
-    n10   (no text)                                 {fill=#D0FFD0}
-    n11   (no text)                                 {fill=#F0D0FF}
+    n5    Output "Please enter a number..."         {fill=#D0FFD0}
+    n6    Input currentNumber                       {fill=#D0E0FF}
+    n7    currentSum = currentSum+ currentNumber    {fill=#FFFFD0}
+    n8    i = i+1                                   {fill=#FFFFD0}
+    n9    average = currentSum/5                    {fill=#FFFFD0}
+    n10   Output "Average is: " & average           {fill=#D0FFD0}
+    n11   End                                       {fill=#F0D0FF}
 
   CONNECTION (neighbors):
     Start                    -- Integer currentNum
-    Integer currentNumber, c -- Start, n2
-    n2                       -- Integer currentNum, n3
-    n3                       -- n2, i<=5
-    i<=5                     -- n3, n5, n8, n9
-    n5                       -- i<=5, n6
-    n6                       -- n5, n7
-    n7                       -- n6, n8
-    n8                       -- i<=5, n7
-    n9                       -- n10, i<=5
-    n10                      -- n11, n9
-    n11                      -- n10
+    Integer currentNumber, c -- Start, currentSum = 0
+    currentSum = 0           -- Integer currentNum, i = 1
+    i = 1                    -- currentSum = 0, i<=5
+    i<=5                     -- i = 1, Output "Please ent, i = i+1, average = currentS
+    Output "Please enter a n -- i<=5, Input currentNumbe
+    Input currentNumber      -- Output "Please ent, currentSum = curre
+    currentSum = currentSum+ -- Input currentNumbe, i = i+1
+    i = i+1                  -- i<=5, currentSum = curre
+    average = currentSum/5   -- Output "Average is, i<=5
+    Output "Average is: " &  -- End, average = currentS
+    End                      -- Output "Average is
 
   DIRECTED (12):
     Start                    -> Integer currentNumber, c
-    n10                      -> n11
-    Integer currentNumber, c -> n2
-    n2                       -> n3
-    n3                       -> i<=5
-    i<=5                     -> n9
-    n9                       -> n10
-    i<=5                     -> n5
-    n8                       -> i<=5
-    n5                       -> n6
-    n6                       -> n7
-    n7                       -> n8
+    Output "Average is: " &  -> End
+    Integer currentNumber, c -> currentSum = 0
+    currentSum = 0           -> i = 1
+    i = 1                    -> i<=5
+    i<=5                     -> average = currentSum/5
+    average = currentSum/5   -> Output "Average is: " & 
+    i<=5                     -> Output "Please enter a n
+    i = i+1                  -> i<=5
+    Output "Please enter a n -> Input currentNumber
+    Input currentNumber      -> currentSum = currentSum+
+    currentSum = currentSum+ -> i = i+1
     roots (sources): Start
-    sinks (terminals): n11
+    sinks (terminals): End
 
-  REACHABILITY  Start ... n11: Start -> Integer curren -> n2 -> n3 -> i<=5 -> n9 -> n10 -> n11
+  REACHABILITY  Start ... End: Start -> Integer curren -> currentSum = 0 -> i = 1 -> i<=5 -> average = curr -> Output "Averag -> End
 
 ==============================================================================
 FILE: 20200118_Global_warming_and_climate_change_-_vertical_block_diagram_-_causes_effects_feedback.svg
@@ -843,7 +741,7 @@ SUMMARY  nodes=6  edges=1  directed=1  undirected=0
 
   NODES (6):
     n0    (no text)                                 {fill=yellow}
-    n1    (no text)                               
+    n1    XML                                     
     n2    XML                                       {fill=lightblue}
     n3    XML                                       {fill=lightblue}
     n4    (no text)                                 {fill=yellow}
@@ -932,29 +830,29 @@ SUMMARY  nodes=10  edges=5  directed=5  undirected=0
 
   NODES (10):
     n0    Count voters' fi rst choices              {fill=white}
-    n1    (no text)                               
-    n2    (no text)                                 {fill=white}
-    n3    (no text)                               
+    n1    Count voters' fi rst choices            
+    n2    Recount all ballots                       {fill=white}
+    n3    Recount all ballots                     
     n4    Are two candidates left?                  {fill=white}
-    n5    (no text)                               
-    n6    (no text)                                 {fill=white}
-    n7    (no text)                               
+    n5    Are two candidates left?                
+    n6    Eliminate last place candidate            {fill=white}
+    n7    Eliminate last place candidate          
     n8    2PP found                                 {fill=white}
-    n9    (no text)                               
+    n9    2PP found                               
 
   CONNECTION (neighbors):
-    Count voters' fi rst cho -- n2, Are two candidates
-    n2                       -- Count voters' fi r, n6
-    Are two candidates left? -- Count voters' fi r, n6, 2PP found
-    n6                       -- n2, Are two candidates
+    Count voters' fi rst cho -- Recount all ballot, Are two candidates
+    Recount all ballots      -- Count voters' fi r, Eliminate last pla
+    Are two candidates left? -- Count voters' fi r, Eliminate last pla, 2PP found
+    Eliminate last place can -- Recount all ballot, Are two candidates
     2PP found                -- Are two candidates
 
   DIRECTED (5):
     Count voters' fi rst cho -> Are two candidates left?
-    n2                       -> Count voters' fi rst cho
-    Are two candidates left? -> n6
+    Recount all ballots      -> Count voters' fi rst cho
+    Are two candidates left? -> Eliminate last place can
     Are two candidates left? -> 2PP found
-    n6                       -> n2
+    Eliminate last place can -> Recount all ballots
     roots (sources): (none)
     sinks (terminals): 2PP found
 
@@ -980,7 +878,7 @@ SUMMARY  nodes=18  edges=2  directed=2  undirected=0
   NODES (18):
     n0    No                                        {fill=#ffffff}
     n1    No                                        {fill=#ffffff}
-    n2    (no text)                                 {fill=#ffffff}
+    n2    Yes                                       {fill=#ffffff}
     n3    No                                        {fill=#ffffff}
     n4    Yes                                       {fill=#ffffff}
     n5    Yes                                       {fill=#ffffff}
@@ -998,21 +896,21 @@ SUMMARY  nodes=18  edges=2  directed=2  undirected=0
     n17   Yes                                       {fill=#ffffff}
 
   CONNECTION (neighbors):
-    n2                       -- Yes
-    Yes                      -- n2
+    Yes                      -- Yes
+    Yes                      -- Yes
     Deny request as too simi -- Yes
     Yes                      -- Deny request as to
 
   DIRECTED (2):
-    Yes                      -> n2
+    Yes                      -> Yes
     Yes                      -> Deny request as too simi
     roots (sources): Yes, Yes
-    sinks (terminals): n2, Deny request as to
+    sinks (terminals): Yes, Deny request as to
 
   CONTAINMENT (node inside container):
     No                        <  (unlabelled container)
 
-  REACHABILITY  Yes ... n2: Yes -> n2
+  REACHABILITY  Yes ... Yes: Yes -> Yes
 
 ==============================================================================
 FILE: ALM_Flowchart.svg
@@ -1230,7 +1128,7 @@ SUMMARY  nodes=3  edges=0  directed=0  undirected=0
 
 ==============================================================================
 FILE: Armadio-Wardrobe.svg
-SUMMARY  nodes=85  edges=253  directed=192  undirected=61
+SUMMARY  nodes=85  edges=128  directed=84  undirected=44
 
   NODES (85):
     n0    (no text)                               
@@ -1294,49 +1192,49 @@ SUMMARY  nodes=85  edges=253  directed=192  undirected=61
     n19                      -- n13, n18
     n20                      -- n13, n23
     n23                      -- n13, n20, n46
-    n24                      -- n25, n26
-    n25                      -- n24, n26
-    n26                      -- n24, n25, n27, n28, n31, n33
+    n24                      -- n26
+    n26                      -- n24, n27, n28, n31, n33
     n27                      -- n26, n28
     n28                      -- n26, n27, n30, n31, n33
     n29                      -- n30
     n30                      -- n28, n29, n47, n49
+    n31                      -- n26, n28, n33, n34, n36, n40, n42
     ...
 
-  DIRECTED (192):
+  DIRECTED (84):
     n84                      -> n5
     n30                      -> n49
     n30                      -> n47
-    n30                      -> n47
     n47                      -> n45
     n39                      -> n38
-    n30                      -> n47
-    n47                      -> n45
-    n30                      -> n47
     n39                      -> n47
     n39                      -> n33
     n33                      -> n28
-    n33                      -> n28
     n28                      -> n30
-    n28                      -> n30
-    n30                      -> n47
     n45                      -> n47
     n45                      -> n33
     n8                       -> n49
     n49                      -> n47
-    n47                      -> n45
     n38                      -> n33
-    n39                      -> n33
-    n49                      -> n47
     n45                      -> n44
-    n38                      -> n33
-    n49                      -> n47
-    n47                      -> n43
     n47                      -> n43
     n44                      -> n38
-    ... (+162 more)
+    n43                      -> n42
+    n44                      -> n33
+    n47                      -> n42
+    n42                      -> n43
+    n33                      -> n43
+    n43                      -> n41
+    n42                      -> n40
+    n42                      -> n37
+    n42                      -> n31
+    n47                      -> n41
+    n41                      -> n40
+    n40                      -> n37
+    n37                      -> n33
+    ... (+54 more)
     roots (sources): n8, n9, n13, n48, n66, n72, n84
-    sinks (terminals): n5, n24, n25, n27, n52, n83
+    sinks (terminals): n5, n24, n27, n52, n83
 
   CONTAINMENT (node inside container):
     n7                        <  (unlabelled container)
@@ -1430,90 +1328,90 @@ FILE: Bouc_émissaire_-_Réaction_en_chaîne__format_svg_.svg
 SUMMARY  nodes=48  edges=10  directed=3  undirected=7
 
   NODES (48):
-    n0    (no text)                               
-    n1    (no text)                               
+    n0    Individu A est mis en colère            
+    n1    Individu A est mis en colère            
     n2    Individu A est mis en colère par un indi  {fill=rgb(0,0,0)}
-    n3    (no text)                               
-    n4    (no text)                               
-    n5    (no text)                               
-    n6    (no text)                               
-    n7    (no text)                               
+    n3    Individu A est mis en colère            
+    n4    A se défend lui-même et                 
+    n5    A se défend lui-même et                 
+    n6    A craint le pouvoir de B et             
+    n7    A craint le pouvoir de B et             
     n8    A se défend lui-même et rend la pareille  {fill=rgb(0,0,0)}
-    n9    (no text)                               
+    n9    A se défend lui-même et                 
     n10   A craint le pouvoir de B et la menace im  {fill=rgb(0,0,0)}
-    n11   (no text)                               
-    n12   (no text)                               
-    n13   (no text)                               
-    n14   (no text)                               
-    n15   (no text)                               
+    n11   A craint le pouvoir de B et             
+    n12   La colère de A pourrait                 
+    n13   La colère de A pourrait                 
+    n14   A ne se défend pas ou ne                
+    n15   A ne se défend pas ou ne                
     n16   La colère de A pourrait être (en partie)  {fill=rgb(0,0,0)}
-    n17   (no text)                               
+    n17   La colère de A pourrait                 
     n18   A ne se défend pas ou ne rend pas la par  {fill=rgb(0,0,0)}
-    n19   (no text)                               
-    n20   (no text)                               
-    n21   (no text)                               
+    n19   A ne se défend pas ou ne                
+    n20   La colère de A est                      
+    n21   La colère de A est                      
     n22   La colère de A est                        {fill=rgb(0,0,0)}
-    n23   (no text)                               
-    n24   (no text)                               
-    n25   (no text)                               
-    n26   (no text)                                 {fill=rgb(0,0,0)}
-    n27   (no text)                               
-    n28   (no text)                               
-    n29   (no text)                               
+    n23   La colère de A est                      
+    n24   A se retire de tout contact             
+    n25   A se retire de tout contact             
+    n26   A se retire de tout contact               {fill=rgb(0,0,0)}
+    n27   A se retire de tout contact             
+    n28   A entre en contact avec                 
+    n29   A entre en contact avec                 
     n30   A entre en contact avec une autre person  {fill=rgb(0,0,0)}
-    n31   (no text)                               
-    n32   (no text)                               
-    n33   (no text)                               
-    n34   (no text)                                 {fill=rgb(0,0,0)}
-    n35   (no text)                               
-    n36   (no text)                               
-    n37   (no text)                               
+    n31   A entre en contact avec                 
+    n32   A ressent sa colère sous                
+    n33   A ressent sa colère sous                
+    n34   A ressent sa colère sous                  {fill=rgb(0,0,0)}
+    n35   A ressent sa colère sous                
+    n36   La colère réprimée de A                 
+    n37   La colère réprimée de A                 
     n38   et sa tension sont déchargées sur C et s  {fill=rgb(0,0,0)}
-    n39   (no text)                               
+    n39   La colère réprimée de A                 
     ... (+8 more)
 
   CONNECTION (neighbors):
-    n0                       -- n4, n6
-    n4                       -- n0, La colère de A pou
-    n6                       -- n0, n14
-    n14                      -- La colère de A est, n6
-    La colère de A pourrait  -- n4
-    n20                      -- n26
-    La colère de A est       -- n14
-    n24                      -- n34
-    n26                      -- n20
-    n28                      -- n32, n36
-    n32                      -- n28
-    n34                      -- n24
-    n36                      -- n28
-    n40                      -- n42
-    n42                      -- n40
+    Individu A est mis en co -- A se défend lui-mê, A craint le pouvoi
+    A se défend lui-même et  -- Individu A est mis, La colère de A pou
+    A craint le pouvoir de B -- Individu A est mis, A ne se défend pas
+    A ne se défend pas ou ne -- La colère de A est, A craint le pouvoi
+    La colère de A pourrait  -- A se défend lui-mê
+    La colère de A est       -- A se retire de tou
+    La colère de A est       -- A ne se défend pas
+    A se retire de tout cont -- A ressent sa colèr
+    A se retire de tout cont -- La colère de A est
+    A entre en contact avec  -- A ressent sa colèr, La colère réprimée
+    A ressent sa colère sous -- A entre en contact
+    A ressent sa colère sous -- A se retire de tou
+    La colère réprimée de A  -- A entre en contact
+    C ressent l'attaque      -- C craint le pouvoi
+    C craint le pouvoir de   -- C ressent l'attaqu
 
   DIRECTED (3):
-    n0                       -> n4
-    n0                       -> n6
-    n40                      -> n42
-    roots (sources): n0, n40
-    sinks (terminals): n4, n6, n42
+    Individu A est mis en co -> A se défend lui-même et
+    Individu A est mis en co -> A craint le pouvoir de B
+    C ressent l'attaque      -> C craint le pouvoir de
+    roots (sources): Individu A est mis, C ressent l'attaqu
+    sinks (terminals): A se défend lui-mê, A craint le pouvoi, C craint le pouvoi
 
   CONTAINMENT (node inside container):
     Individu A est mis en co  <  (unlabelled container)
-    n3                        <  (unlabelled container)
+    Individu A est mis en co  <  (unlabelled container)
     A se défend lui-même et   <  (unlabelled container)
-    n9                        <  (unlabelled container)
+    A se défend lui-même et   <  (unlabelled container)
     A craint le pouvoir de B  <  (unlabelled container)
-    n11                       <  (unlabelled container)
+    A craint le pouvoir de B  <  (unlabelled container)
     La colère de A pourrait   <  (unlabelled container)
-    n17                       <  (unlabelled container)
+    La colère de A pourrait   <  (unlabelled container)
     A ne se défend pas ou ne  <  (unlabelled container)
-    n19                       <  (unlabelled container)
+    A ne se défend pas ou ne  <  (unlabelled container)
     La colère de A est        <  (unlabelled container)
-    n23                       <  (unlabelled container)
-    n26                       <  (unlabelled container)
-    n27                       <  (unlabelled container)
+    La colère de A est        <  (unlabelled container)
+    A se retire de tout cont  <  (unlabelled container)
+    A se retire de tout cont  <  (unlabelled container)
     A entre en contact avec   <  (unlabelled container)
 
-  REACHABILITY  n0 ... n4: n0 -> n4
+  REACHABILITY  Individu A est m ... A se défend lui-: Individu A est -> A se défend lu
 
 ==============================================================================
 FILE: Calligra_Flow_icon.svg
@@ -1611,4 +1509,4 @@ SUMMARY  nodes=10  edges=11  directed=11  undirected=0
   REACHABILITY  Gestion de la ta ... Analyse lexicale: Gestion de la  -> Analyse lexica
 
 ==============================================================================
-DONE  reconstructed=36  errored=0
+DONE  reconstructed=35  errored=0

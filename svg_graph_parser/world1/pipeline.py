@@ -19,7 +19,7 @@ from ..core.loader import load, _style_fill
 from ..core.text_reader import load_text
 from ..core.containment import assign_containment
 from .constants import ARROWHEAD_MAX_SIDE, ATTACH_TOL, MATCH_TOL, TEXT_PAD
-from ..core.point_match import match_shape
+from ..core.point_match import match_shape, point_in_polygon
 # Scale-relative knobs. Move to constants.py once you are happy with them.
 MATCH_TOL_FACTOR = 0.6      # match tolerance = this * typical node size
 TRAVEL_BACKOFF_FRAC = 0.15  # read direction over this fraction of connector length
@@ -324,11 +324,74 @@ def _marker_direction(c):
     return None
 
 
+def _descends_from(leaf, container):
+    p = getattr(leaf, "parent", None)
+    while p is not None:
+        if p is container:
+            return True
+        p = getattr(p, "parent", None)
+    return False
+
+
+def _entity_boxes(els):
+    """The outermost non-frame group box for each grouping: a full ER table
+    (header + all column rows), not just its header strip.
+
+    Hierarchy is frame > table box > header/rows > cells. The innermost container
+    is only the header; the box a connector actually meets is the FULL table,
+    whose bottom edge sits where the connector attaches. So for each element we
+    climb to the outermost ancestor that is not a top-level frame, and collect the
+    distinct container boxes found. A frame is a top-level container (no parent).
+    """
+    elems = [e for e in els if e.role in ("shape", "container")]
+    frame_ids = {id(e) for e in elems
+                 if getattr(e, "is_container", False) and getattr(e, "parent", None) is None}
+    found = {}
+    for e in elems:
+        cur, p = e, getattr(e, "parent", None)
+        while p is not None and id(p) not in frame_ids:
+            cur, p = p, getattr(p, "parent", None)
+        if getattr(cur, "is_container", False) and id(cur) not in frame_ids:
+            found[id(cur)] = cur
+    return list(found.values())
+
+
+def _match_node(point, leaves, groups, char_len):
+    """Match an endpoint to a leaf node, keeping grouping intact.
+
+    First match against leaves directly. If that is confident, use it (an
+    endpoint landing in a cell stays on that cell). If it is weak -- the endpoint
+    sits in the GAP between two stacked tables, inside no cell and often just
+    outside the table box edge -- find the nearest grouping (table) and snap to
+    the nearest leaf WITHIN it. The marker for a relationship is drawn at its own
+    table's edge, so the nearest table is the right one. This keeps the edge
+    pointing at a real leaf node (which folds up to its table) instead of
+    dropping it.
+    """
+    shp, conf = match_shape(point, leaves, char_len)
+    if conf >= MIN_EDGE_CONFIDENCE:
+        return shp, conf
+    if groups:
+        grp, gconf = match_shape(point, groups, char_len)
+        if grp is not None and gconf >= MIN_EDGE_CONFIDENCE:
+            kids = [l for l in leaves if _descends_from(l, grp)]
+            if kids:
+                leaf, lconf = match_shape(point, kids, char_len)
+                # the endpoint clearly belongs to this table (gconf high); keep
+                # that confidence rather than the leaf's gap-distance score
+                return leaf, max(lconf, gconf)
+    return shp, conf
+
+
 def build_edges(els):
     shapes = [e for e in els if e.role == "shape"]
+    groups = _entity_boxes(els)   # full table boxes; frame excluded
     connectors = [e for e in els if e.role == "connector"]
 
     char_len = _typical_node_size(shapes)
+
+    def match(point):
+        return _match_node(point, shapes, groups, char_len)
 
     edges = []
     for c in connectors:
@@ -346,8 +409,8 @@ def build_edges(els):
                 source_end, target_end = a, b
             else:
                 source_end, target_end = b, a
-            target, tconf = match_shape(target_end, shapes, char_len)
-            source, sconf = match_shape(source_end, shapes, char_len)
+            target, tconf = match(target_end)
+            source, sconf = match(source_end)
             if (source is not None and target is not None and source is not target
                     and sconf >= MIN_EDGE_CONFIDENCE and tconf >= MIN_EDGE_CONFIDENCE):
                 edges.append(Edge(source, target, c, directed=True, style=style,
@@ -362,8 +425,8 @@ def build_edges(els):
             source_end = a if at_last else b
             travel = _travel_at_end(c.points, at_last, backoff)
             tip = _arrowhead_tip(c.head, travel)
-            target, tconf = match_shape(tip, shapes, char_len)
-            source, sconf = match_shape(source_end, shapes, char_len)
+            target, tconf = match(tip)
+            source, sconf = match(source_end)
             if (source is not None and target is not None and source is not target
                     and sconf >= MIN_EDGE_CONFIDENCE and tconf >= MIN_EDGE_CONFIDENCE):
                 edges.append(Edge(source, target, c, directed=True, style=style,
@@ -372,23 +435,23 @@ def build_edges(els):
                 # The directed read failed (tip landed badly, or a spurious head
                 # was attached). Don't drop the edge -- fall back to the raw
                 # endpoints as an undirected connection.
-                _emit_undirected(edges, c, a, b, shapes, char_len, style)
+                _emit_undirected(edges, c, a, b, match, style)
 
         # CASE 2 (combined arrow) HOOK: arrows.py finds tip/tail, not wired yet.
         # When wired: tip/tail -> match_shape each -> directed Edge with confidences.
 
         # CASE 3: headless line. Emit undirected.
         else:
-            _emit_undirected(edges, c, a, b, shapes, char_len, style)
+            _emit_undirected(edges, c, a, b, match, style)
 
     return edges
 
 
-def _emit_undirected(edges, c, a, b, shapes, char_len, style):
+def _emit_undirected(edges, c, a, b, match, style):
     """Match both raw endpoints and emit an undirected edge if they land on two
     distinct shapes. Shared by the headless case and the directed-fallback case."""
-    s_a, ca = match_shape(a, shapes, char_len)
-    s_b, cb = match_shape(b, shapes, char_len)
+    s_a, ca = match(a)
+    s_b, cb = match(b)
     if (s_a is not None and s_b is not None and s_a is not s_b
             and ca >= MIN_EDGE_CONFIDENCE and cb >= MIN_EDGE_CONFIDENCE):
         ends = sorted([(s_a, ca), (s_b, cb)],

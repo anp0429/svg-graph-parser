@@ -77,3 +77,68 @@ def test_ids_are_reproducible():
 
 def test_stable_root_under_rebuild():
     assert _lamp().roots() == _lamp().roots()
+
+
+# ---- lossless tree + grouped-node tests (ER export) -----------------------
+ERD = Path(__file__).resolve().parents[1] / "samples" / "miro_erd.svg"
+
+
+def _erd():
+    import pytest
+    if not ERD.exists():
+        pytest.skip("miro_erd sample not present")
+    return SceneGraph.from_svg(str(ERD))
+
+
+def test_grouped_table_is_single_node_with_columns():
+    g = _erd()
+    order = [n for n in g.nodes.values() if n.label == "ORDER"]
+    assert len(order) == 1                      # the table is ONE node, not many
+    cells = {c for row in order[0].content for c in row}
+    assert {"order_id", "customer_id", "PK", "FK"} <= cells   # columns kept
+
+
+def test_nothing_dropped_text_reachable_by_column_name():
+    g = _erd()
+    # an agent can locate a node by a column name, proving field text survived
+    assert any(n.label == "ORDER" for n in g.find_by_text("customer_id"))
+
+
+def test_relationships_stay_at_table_level():
+    g = _erd()
+    rels = {(g.label(e.source), g.label(e.target)) for e in g.edges if e.directed}
+    assert ("CUSTOMER", "ORDER") in rels
+
+
+# --- dense board: connector endpoints must roll up to the table node ---
+DENSE = Path(__file__).resolve().parents[1] / "samples" / "miro_connectors.svg"
+
+
+def _dense():
+    import pytest
+    if not DENSE.exists():
+        pytest.skip("miro_connectors sample not present")
+    return SceneGraph.from_svg(str(DENSE))
+
+
+def test_dense_board_connector_rolls_up_to_table():
+    """Regression: on a dense board a connector attaches at a tall table's bottom
+    edge, far from its title. The endpoint must still resolve to the table node,
+    not be dropped. Before the entity-box fix, successors(CUSTOMER) was empty."""
+    g = _dense()
+    ids = {n.label: nid for nid, n in g.nodes.items() if n.label}
+    assert "ORDER" in [g.label(s) for s in g.successors(ids["CUSTOMER"])]
+    assert "CUSTOMER" in [g.label(s) for s in g.predecessors(ids["ORDER"])]
+
+
+def test_dense_board_dashed_set_complete():
+    """The dashed ER relationships must include STUDENT->COURSE, which the old
+    leaf-only matching dropped on this board."""
+    g = _dense()
+    ent = {"AUTHOR", "BOOK", "TEACHER", "STUDENT", "COURSE", "ACTOR", "MOVIE",
+           "MANAGER", "EMPLOYEE"}
+    dashed = {(g.label(e.source), g.label(e.target))
+              for e in g.edges_by_style("dashed")
+              if g.label(e.source) in ent and g.label(e.target) in ent}
+    assert {("AUTHOR", "BOOK"), ("TEACHER", "STUDENT"), ("STUDENT", "COURSE"),
+            ("ACTOR", "MOVIE"), ("MANAGER", "EMPLOYEE")} <= dashed

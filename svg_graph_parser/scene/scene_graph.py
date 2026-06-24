@@ -144,14 +144,70 @@ class SceneGraph:
         for b in boxes:
             by_bbox.setdefault(tuple(round(x) for x in b.bbox), b)
 
-        for node in self.nodes.values():
+        node_entity = {}   # node id -> id(entity tree box)
+        for nid, node in self.nodes.items():
             tb = by_bbox.get(tuple(round(x) for x in node.bbox))
             if tb is None:
                 continue
             ent = entity(tb)
+            node_entity[nid] = id(ent)
             runs = subtree_runs(ent)
             node.content = _structured_rows(runs)
             node.content_text = " ".join(r.text for r in runs)
+
+        self._redirect_edges_to_entity_reps(node_entity)
+
+    def _redirect_edges_to_entity_reps(self, node_entity):
+        """Collapse edges to one node per group (e.g. an ER table).
+
+        A connector physically lands on whatever part of a table is nearest --
+        often a column cell, not the title. All cells of a table share one entity
+        (its tree box), so map every node to its entity's representative node (the
+        one carrying the table's title) and rewrite edge endpoints through it.
+        A short table whose connector already hit the title is unaffected; a tall
+        table whose connector hit a bottom cell now resolves to the table. Flat
+        diagrams, where each node is its own entity, are untouched.
+        """
+        members = {}
+        for nid, eid in node_entity.items():
+            members.setdefault(eid, []).append(nid)
+        rep = {}
+        for eid, mem in members.items():
+            if len(mem) < 2:
+                continue  # not a multi-part group; leave nodes as themselves
+            labeled = [m for m in mem if self.nodes[m].label]
+            r = labeled[0] if labeled else mem[0]
+            for m in mem:
+                rep[m] = r
+
+        if not rep:
+            return
+
+        def R(nid):
+            return rep.get(nid, nid)
+
+        # rebuild edge tables through the representative map, dropping self-loops
+        old = self.edges
+        self.edges = []
+        self._out = {nid: [] for nid in self.nodes}
+        self._in = {nid: [] for nid in self.nodes}
+        self._adj = {nid: set() for nid in self.nodes}
+        seen = set()
+        for ge in old:
+            s, t = R(ge.source), R(ge.target)
+            if s == t:
+                continue
+            key = (s, t, ge.directed, ge.style)
+            if key in seen:
+                continue
+            seen.add(key)
+            ge.source, ge.target = s, t
+            self.edges.append(ge)
+            self._adj[s].add(t)
+            self._adj[t].add(s)
+            if ge.directed:
+                self._out[s].append(t)
+                self._in[t].append(s)
 
     # ---- lenses (the MCP query surface) ----
     def successors(self, nid):

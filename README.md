@@ -30,6 +30,12 @@ a language model can ask a diagram structural questions ("what depends on X",
 - **AI access:** an MCP server exposes the scene graph as agent tools. A live
   agent can load a diagram and trace paths through it (see "Use with an AI
   agent" below).
+- **Grouped ER tables (Miro):** on a Miro entity-relationship board, each table
+  is reconstructed as one node carrying its columns as structured content, with
+  connector endpoints rolled up through containment so a connector landing on any
+  part of a tall table resolves to the table. On a dense 16-table board, all 9
+  relationships resolve with correct foreign-key direction (crow's-foot geometry)
+  and the full dashed/solid split (see "Benchmark" below).
 
 ## Package layout
 
@@ -146,9 +152,11 @@ g.successors(g.find_by_text("plugged in")[0].id)   # -> Bulb burned out?, Plug i
 
 `mcp/server.py` is a Model Context Protocol server (stdio) that exposes the
 scene graph lenses as tools: `load_diagram`, `successors`, `predecessors`,
-`neighbors`, `find_path`, `find_nodes`, `edges_by_style`. An agent loads a
-diagram once, then asks structural questions one tool call at a time, instead of
-being handed the whole graph as a blob.
+`neighbors`, `find_path`, `find_nodes`, `edges_by_style`, `node_content` (a
+node's grouped contents, e.g. an ER table's columns), and `node_children`. An
+agent loads a diagram once, then asks structural questions one tool call at a
+time, instead of being handed the whole graph as a blob. `load_diagram` also
+returns a `token_cost` block comparing the raw SVG size against the scene graph.
 
 Install with the optional MCP dependency:
 
@@ -181,6 +189,50 @@ the graph reconstructed from raw geometry:
 ```
 Lamp doesn't work -> Lamp plugged in? -> Bulb burned out? -> Repair lamp
 ```
+
+## Benchmark: scene graph vs. raw SVG for an agent
+
+The point of the scene graph is to let an agent answer structural questions
+about a diagram. A fair question is whether that earns its keep over simply
+handing the raw SVG to a capable, tool-using agent. Tested on a dense Miro
+entity-relationship board (`tests/samples/miro_connectors.svg`, 16 tables, ~307
+KB), asking the same question both ways: *does ORDER reference CUSTOMER or the
+reverse, which column is the foreign key, and which relationships are dashed?*
+
+**Raw SVG.** The file does not fit comfortably in context, so the agent wrote
+its own extraction script and asked for shell permission to run it. Its parser
+keyed on Miro-specific markup (`data-widget-id` to split widgets,
+`#LineHeadERD…` marker names for cardinality) and read a single `translate` per
+element. It reached the correct answer, but only by leaning on the exporting
+tool's metadata — the same shortcut that returns nothing on a Lucid, Inkscape,
+or draw.io export — and after several script iterations, a shell-execution
+approval, and noticeably higher latency.
+
+**Scene graph (MCP).** The agent called `load_diagram` once, then `node_content`
+and `predecessors`/`edges_by_style`. It answered correctly — `CUSTOMER → ORDER`,
+foreign key `ORDER.customer_id`, all five dashed relationships — from bounded,
+read-only tools, with no generated code and no shell access.
+
+Measured in the same client (Claude Code `/context`, comparing the conversation
+"Messages" only, since fixed system overhead is identical):
+
+| | raw SVG + agent-written parser | scene graph (MCP) |
+| --- | --- | --- |
+| answer correct | yes (eventually) | yes |
+| context used (messages) | ~36k tokens | ~10k tokens |
+| code execution | wrote and ran a parser; needed approval | none — read-only tools |
+| tool dependence | Miro `data-widget-id` / marker names | geometry only |
+
+Two honest caveats. The `token_cost` figure in `load_diagram` is a `chars/4`
+estimate (~70–80x reduction on this board); the exact tokenizer count requires
+the Anthropic `count_tokens` endpoint and an API key. And `edges_by_style`
+faithfully reports the board's legend sample arrows alongside the real
+relationships; they carry empty labels and are trivially filtered.
+
+For a board too large to load at all (a 2.8 MB Miro template, ~700k estimated
+tokens raw), the raw approach simply does not fit any context window, while the
+scene graph (~2.5k tokens) is queried normally. There, the scene graph is not an
+optimization — it is the only option.
 
 ## Why this exists
 
